@@ -8,10 +8,13 @@
 template<typename T>
 using Ptr = std::shared_ptr<T>;
 
+class Material;
+
 struct HitRecord {
 	// float t; 我们在 Ray 中记录 tMin 和 tMax
 	Vec3f p;
-	Vec3f n;
+	Vec3f n; // 单位向量
+	Ptr<Material> material;
 };
 
 class Hitable {

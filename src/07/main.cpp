@@ -1,6 +1,8 @@
 #include <Sphere.h>
 #include <HitableList.h>
 
+#include <Util.h>
+
 #include <ROOT_PATH.h>
 
 #include <fstream>
@@ -19,8 +21,11 @@ const Vec3f Sky(const Ray & ray) {
 
 const Vec3f Trace(Ptr<Hitable> scene, Ray & ray) {
 	HitRecord rec;
-	if (scene->Hit(ray, rec))
-		return 0.5f * (rec.n + Vec3f(1.f)); // 映射到 0 - 1
+	if (scene->Hit(ray, rec)) {
+		Vec3f target = rec.p + rec.n + Util::RandInSphere();
+		Ray newRay(rec.p, target);
+		return 0.5f * Trace(scene, newRay);
+	}
 
 	return Sky(ray);
 }
@@ -28,6 +33,7 @@ const Vec3f Trace(Ptr<Hitable> scene, Ray & ray) {
 int main() {
 	int width = 200;
 	int height = 100;
+	int sampleNum = 100;
 
 	// 相机参数
 	Vec3f pos(0.f);
@@ -40,21 +46,27 @@ int main() {
 	auto ground = Sphere::New({ 0, -100.5, -1 }, 100.f);
 	auto scene = HitableList::New({ sphere,ground });
 
-	ofstream rst(ROOT_PATH + "data/5.ppm"); // ppm 是一种简单的图片格式
+	ofstream rst(ROOT_PATH + "data/7.ppm"); // ppm 是一种简单的图片格式
 
 	rst << "P3\n" << width << " " << height << "\n255\n";
 
 	for (int j = 0; j < height; j++) { // 从上至下
 		for (int i = 0; i < width; i++) { // 从左至右
-			float u = float(i) / float(width);
-			float v = float(height - j) / float(height);
+			Vec3f color(0.f);
+			for (int k = 0; k < sampleNum; k++) { // 多重采样
+				float u = (i + Util::RandF()) / width;
+				float v = (height - j + Util::RandF()) / height;
 
-			Ray ray(pos, lowerLeft + u * horizontal + v * vertical);
+				Vec3f dir = lowerLeft + u * horizontal + v * vertical - pos;
+				Ray ray(pos, dir);
 
-			auto color = Trace(scene, ray);
+				color += Trace(scene, ray);
+			}
+			color /= float(sampleNum); // 求均值
+			Vec3f gammaColor = Util::Gamma(color);
 
-			Vec3i iColor = 255.99f * color;
-			rst << iColor.r << " " << iColor.g << " " << iColor.b << endl;
+			Vec3i iGammaColor = 255.99f * gammaColor;
+			rst << iGammaColor.r << " " << iGammaColor.g << " " << iGammaColor.b << endl;
 		}
 	}
 

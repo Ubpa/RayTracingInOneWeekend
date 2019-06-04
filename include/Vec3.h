@@ -61,6 +61,11 @@ public:
 		z += rhs.z;
 		return *this;
 	}
+
+	const Vec3 operator-() const {
+		return { -x,-y,-z };
+	}
+
 	const Vec3 operator-(const Vec3 & rhs) const {
 		return { x - rhs.x,y - rhs.y,z - rhs.z };
 	}
@@ -115,7 +120,11 @@ public:
 		assert(norm != static_cast<T>(0));
 		return *this / norm;
 	}
-
+	
+	// ÖğÔªËØÏà³Ë
+	const Vec3 operator*(const Vec3 & rhs) const {
+		return { x*rhs.x,y*rhs.y,z*rhs.z };
+	}
 
 public:
 	union {

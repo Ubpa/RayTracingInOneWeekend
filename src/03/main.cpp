@@ -36,8 +36,8 @@ int main() {
 			float u = float(i) / float(width);
 			float v = float(height - j) / float(height);
 
-			auto target = lowerLeft + u * horizontal + v * vertical;
-			Ray ray(pos, target);
+			Vec3f dir = lowerLeft + u * horizontal + v * vertical - pos;
+			Ray ray(pos, dir);
 
 			auto skyColor = Sky(ray);
 

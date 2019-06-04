@@ -1,5 +1,5 @@
-#include <Ray.h>
-#include <Vec3.h>
+#include <Sphere.h>
+#include <HitableList.h>
 
 #include <ROOT_PATH.h>
 
@@ -17,33 +17,10 @@ const Vec3f Sky(const Ray & ray) {
 	return Vec3f::Lerp(white, blue, t);
 }
 
-bool Hit_Sphere(const Vec3f & center, float radius, const Ray & ray) {
-	// c : center
-	// r : radius
-	// o : ray.o
-	// d : ray.d
-	// 
-	// o + t * d == p
-	// (p-c)^2 == r^2
-	// (d * t + o - c)^2 == r^2
-	// d*d * t^2 + 2*d*(o-c) * t + (o-c)^2 - r^2 = 0
-
-	auto oc = ray.o - center;
-
-	float a = ray.d.Dot(ray.d);
-	float b = 2.f * ray.d.Dot(oc);
-	float c = oc.Dot(oc) - radius * radius;
-
-	float delta = b * b - 4.f * a * c; // 判别式
-	if (delta <= 0.f)
-		return false;
-
-	return true;
-}
-
-const Vec3f Trace(const Ray & ray) {
-	if (Hit_Sphere({ 0,0,-1 }, 0.5f, ray))
-		return { 1,0,0 };
+const Vec3f Trace(Ptr<Hitable> scene, Ray & ray) {
+	HitRecord rec;
+	if (scene->Hit(ray, rec))
+		return 0.5f * (rec.n + Vec3f(1.f)); // 映射到 0 - 1
 
 	return Sky(ray);
 }
@@ -58,7 +35,12 @@ int main() {
 	Vec3f horizontal(4, 0, 0);
 	Vec3f vertical(0, 2, 0);
 
-	ofstream rst(ROOT_PATH + "data/4.ppm"); // ppm 是一种简单的图片格式
+	// 场景
+	auto sphere = Sphere::New({ 0, 0, -1 }, 0.5f);
+	auto ground = Sphere::New({ 0, -100.5, -1 }, 100.f);
+	auto scene = HitableList::New({ sphere,ground });
+
+	ofstream rst(ROOT_PATH + "data/8.ppm"); // ppm 是一种简单的图片格式
 
 	rst << "P3\n" << width << " " << height << "\n255\n";
 
@@ -67,9 +49,10 @@ int main() {
 			float u = float(i) / float(width);
 			float v = float(height - j) / float(height);
 
-			Ray ray(pos, lowerLeft + u * horizontal + v * vertical);
+			Vec3f dir = lowerLeft + u * horizontal + v * vertical - pos;
+			Ray ray(pos, dir);
 
-			auto color = Trace(ray);
+			auto color = Trace(scene, ray);
 
 			Vec3i iColor = 255.99f * color;
 			rst << iColor.r << " " << iColor.g << " " << iColor.b << endl;

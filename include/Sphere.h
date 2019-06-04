@@ -5,12 +5,12 @@
 
 class Sphere : public Hitable {
 public:
-	Sphere(const Vec3f & center, float radius) :center(center), radius(radius) { }
+	Sphere(const Vec3f & center, float radius, Ptr<Material> material = nullptr) :center(center), radius(radius), material(material) { }
 
 public:
 	// 生成 Ptr 的方便接口
-	static Ptr<Sphere> New(const Vec3f & center, float radius) {
-		return std::make_shared<Sphere>(center, radius);
+	static Ptr<Sphere> New(const Vec3f & center, float radius, Ptr<Material> material = nullptr) {
+		return std::make_shared<Sphere>(center, radius, material);
 	}
 
 public:
@@ -19,6 +19,8 @@ public:
 public:
 	Vec3f center;
 	float radius;
+
+	Ptr<Material> material;// 第 08 节引入
 };
 
 // ------------- 实现
@@ -54,6 +56,8 @@ bool Sphere::Hit(Ray & ray, HitRecord & rec) const {
 
 	rec.p = ray.EndPos();
 	rec.n = (rec.p - center )/ radius;
+
+	rec.material = material; // 第 08 节引入
 
 	return true;
 }
