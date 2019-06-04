@@ -40,7 +40,7 @@ int main() {
 	auto ground = Sphere::New({ 0, -100.5, -1 }, 100.f);
 	auto scene = HitableList::New({ sphere,ground });
 
-	ofstream rst(ROOT_PATH + "data/8.ppm"); // ppm 是一种简单的图片格式
+	ofstream rst(ROOT_PATH + "data/05.ppm"); // ppm 是一种简单的图片格式
 
 	rst << "P3\n" << width << " " << height << "\n255\n";
 

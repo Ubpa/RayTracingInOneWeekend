@@ -7,6 +7,8 @@
 
 #include <Util.h>
 
+#include <Camera.h>
+
 #include <ROOT_PATH.h>
 
 #include <fstream>
@@ -45,10 +47,13 @@ int main() {
 	int sampleNum = 100;
 
 	// 相机参数
-	Vec3f pos(0.f);
-	Vec3f lowerLeft(-2, -1, -1);
-	Vec3f horizontal(4, 0, 0);
-	Vec3f vertical(0, 2, 0);
+	Vec3f pos(3,3,2);
+	Vec3f target(0, 0, -1);
+	float focusDist = (target - pos).Norm();
+	float vfov = 25;
+	float aspect = float(width) / float(height);
+	float aperture = 2.f;
+	Camera camera(pos, target, vfov, aspect, aperture, focusDist);
 
 	// 场景
 	auto sphereMid = Sphere::New({ 0, 0, -1 }, 0.5f, Lambertian::New(Vec3f(0.1,0.2,0.5)));
@@ -58,7 +63,7 @@ int main() {
 	auto ground = Sphere::New({ 0, -100.5, -1 }, 100.f, Lambertian::New(Vec3f(0.8f, 0.8f, 0.f)));
 	auto scene = HitableList::New({ sphereLeft, sphereLeftInner, sphereMid, sphereRight, ground });
 
-	ofstream rst(ROOT_PATH + "data/09.ppm"); // ppm 是一种简单的图片格式
+	ofstream rst(ROOT_PATH + "data/11.ppm"); // ppm 是一种简单的图片格式
 
 	rst << "P3\n" << width << " " << height << "\n255\n";
 
@@ -69,8 +74,7 @@ int main() {
 				float u = (i + Util::RandF()) / width;
 				float v = (height - j + Util::RandF()) / height;
 
-				Vec3f dir = lowerLeft + u * horizontal + v * vertical - pos;
-				Ray ray(pos, dir);
+				Ray ray = camera.GenRay(u, v);
 
 				color += Trace(scene, ray,0);
 			}

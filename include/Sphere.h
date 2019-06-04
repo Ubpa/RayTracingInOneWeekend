@@ -8,7 +8,7 @@ public:
 	Sphere(const Vec3f & center, float radius, Ptr<Material> material = nullptr) :center(center), radius(radius), material(material) { }
 
 public:
-	// 生成 Ptr 的方便接口
+	// 生成 Ptr 的便利接口
 	static Ptr<Sphere> New(const Vec3f & center, float radius, Ptr<Material> material = nullptr) {
 		return std::make_shared<Sphere>(center, radius, material);
 	}

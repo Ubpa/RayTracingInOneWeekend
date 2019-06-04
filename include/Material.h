@@ -12,8 +12,8 @@ struct ScatterRst {
 	}
 
 	bool isScatter;
-	Ray ray;
-	Vec3f attenuation;
+	Ray ray; // 新的光线
+	Vec3f attenuation; // 衰减
 };
 
 class Material {

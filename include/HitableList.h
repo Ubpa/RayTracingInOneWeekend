@@ -9,7 +9,7 @@ public:
 	HitableList(const std::vector<Ptr<Hitable>> & hitables = std::vector<Ptr<Hitable>>{}) : hitables(hitables) {}
 
 public:
-	// 生成 Ptr 的方便接口
+	// 生成 Ptr 的便利接口
 	static Ptr<HitableList> New(const std::vector<Ptr<Hitable>> & hitables = std::vector<Ptr<Hitable>>{}) {
 		return std::make_shared<HitableList>(hitables);
 	}

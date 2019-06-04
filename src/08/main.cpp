@@ -53,7 +53,7 @@ int main() {
 	auto ground = Sphere::New({ 0, -100.5, -1 }, 100.f, Lambertian::New(Vec3f(0.5f)));
 	auto scene = HitableList::New({ sphereLeft, sphereMid, sphereRight, ground });
 
-	ofstream rst(ROOT_PATH + "data/8.ppm"); // ppm 是一种简单的图片格式
+	ofstream rst(ROOT_PATH + "data/08.ppm"); // ppm 是一种简单的图片格式
 
 	rst << "P3\n" << width << " " << height << "\n255\n";
 

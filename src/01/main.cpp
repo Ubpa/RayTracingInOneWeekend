@@ -8,7 +8,7 @@ int main(){
 	int width = 200;
 	int height = 100;
 
-	ofstream rst(ROOT_PATH + "data/1.ppm"); // ppm 是一种简单的图片格式
+	ofstream rst(ROOT_PATH + "data/01.ppm"); // ppm 是一种简单的图片格式
 
 	rst << "P3\n" << width << " " << height << "\n255\n";
 

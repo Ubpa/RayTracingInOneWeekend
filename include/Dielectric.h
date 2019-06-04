@@ -1,17 +1,18 @@
-#ifndef _DIELECTRICS_H_
-#define _DIELECTRICS_H_
+#ifndef _DIELECTRIC_H_
+#define _DIELECTRIC_H_
 
 #include <Material.h>
 
 #include <Util.h>
 
-class Dielectrics :public Material {
+// 电介质，如水、玻璃
+class Dielectric :public Material {
 public:
-	Dielectrics(float ior) :ior(ior) {}
+	Dielectric(float ior) :ior(ior) {}
 
 public:
-	static Ptr<Dielectrics> New(float ior) {
-		return std::make_shared<Dielectrics>(ior);
+	static Ptr<Dielectric> New(float ior) {
+		return std::make_shared<Dielectric>(ior);
 	}
 
 public:
@@ -21,12 +22,10 @@ public:
 	float ior;
 };
 
-// ------------------ 实现
-
-const ScatterRst Dielectrics::Scatter(const Ray & ray, const HitRecord & rec) const {
+const ScatterRst Dielectric::Scatter(const Ray & ray, const HitRecord & rec) const {
 	Vec3f I = ray.d.Normalize();
 
-	Vec3f T;
+	Vec3f T; // 折射方向
 	if (!Util::Refract(I, rec.n, ior, T)) {
 		// 全反射
 		Vec3f dir = Util::Reflect(I, rec.n);
@@ -49,4 +48,4 @@ const ScatterRst Dielectrics::Scatter(const Ray & ray, const HitRecord & rec) co
 	return ScatterRst(true, { rec.p, T }, Vec3f(1.f));
 }
 
-#endif // !_DIELECTRICS_H_
+#endif // !_DIELECTRIC_H_

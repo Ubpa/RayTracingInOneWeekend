@@ -6,9 +6,9 @@
 #include <memory>
 
 template<typename T>
-using Ptr = std::shared_ptr<T>;
+using Ptr = std::shared_ptr<T>; // 智能指针，简写
 
-class Material;
+class Material; // 前向声明
 
 struct HitRecord {
 	// float t; 我们在 Ray 中记录 tMin 和 tMax

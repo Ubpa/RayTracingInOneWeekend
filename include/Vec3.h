@@ -37,7 +37,7 @@ public:
 		return _data[n];
 	}
 
-	// 插值
+	// 线性插值
 	template<typename U>
 	static const Vec3 Lerp(const Vec3 & lhs, const Vec3 & rhs, U t) {
 		float tF = static_cast<float>(t);
@@ -53,7 +53,7 @@ public:
 
 	// 线性运算: +, -, *, /
 	const Vec3 operator+(const Vec3 & rhs) const {
-		return { x + rhs.x,y + rhs.y,z + rhs.z };
+		return { x + rhs.x, y + rhs.y, z + rhs.z };
 	}
 	Vec3 & operator+=(const Vec3 & rhs) {
 		x += rhs.x;
@@ -63,11 +63,11 @@ public:
 	}
 
 	const Vec3 operator-() const {
-		return { -x,-y,-z };
+		return { -x, -y, -z };
 	}
 
 	const Vec3 operator-(const Vec3 & rhs) const {
-		return { x - rhs.x,y - rhs.y,z - rhs.z };
+		return { x - rhs.x, y - rhs.y, z - rhs.z };
 	}
 	Vec3 & operator-=(const Vec3 & rhs) {
 		x -= rhs.x;
@@ -77,7 +77,7 @@ public:
 	}
 
 	const Vec3 operator*(T k) const {
-		return { x*k,y*k,z*k };
+		return { x*k, y*k, z*k };
 	}
 	Vec3 & operator*=(T k) {
 		x *= k;
@@ -104,8 +104,11 @@ public:
 	}
 
 	// 内积
+	static T Dot(const Vec3 & lhs, const Vec3 & rhs) {
+		return lhs.x * rhs.x + lhs.y * rhs.y + lhs.z * rhs.z;
+	}
 	T Dot(const Vec3 & rhs) const {
-		return x * rhs.x + y * rhs.y + z * rhs.z;
+		return Dot(*this, rhs);
 	}
 
 	// 内积范数
@@ -123,11 +126,26 @@ public:
 	
 	// 逐元素相乘
 	const Vec3 operator*(const Vec3 & rhs) const {
-		return { x*rhs.x,y*rhs.y,z*rhs.z };
+		return { x*rhs.x, y*rhs.y, z*rhs.z };
+	}
+
+	// 叉乘
+	static const Vec3 Cross(const Vec3 & lhs, const Vec3 & rhs) {
+		//  i  j  k
+		// x1 y1 z1
+		// x2 y2 z2
+		return {
+			lhs.y * rhs.z - lhs.z * rhs.y,
+			lhs.z * rhs.x - lhs.x * rhs.z,
+			lhs.x * rhs.y - lhs.y * rhs.x
+		};
+	}
+	const Vec3 Cross(const Vec3 & rhs) const {
+		return Cross(*this, rhs);
 	}
 
 public:
-	union {
+	union { // 常用技巧，使得我们可以方便的获取元素，而不需要通过函数接口，如 x(), y()
 		struct {
 			T x, y, z;
 		};

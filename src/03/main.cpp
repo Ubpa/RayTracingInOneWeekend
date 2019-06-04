@@ -27,7 +27,7 @@ int main() {
 	Vec3f horizontal(4, 0, 0);
 	Vec3f vertical(0, 2, 0);
 
-	ofstream rst(ROOT_PATH + "data/3.ppm"); // ppm 是一种简单的图片格式
+	ofstream rst(ROOT_PATH + "data/03.ppm"); // ppm 是一种简单的图片格式
 
 	rst << "P3\n" << width << " " << height << "\n255\n";
 
