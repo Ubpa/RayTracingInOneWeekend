@@ -546,7 +546,7 @@ const ScatterRst Dielectric::Scatter(const Ray & ray, const HitRecord & rec) con
 
 相机的位置和朝向可以用位置 `lookfrom` 和视点 `lookat` 确定
 
-![1559717184698](assets/1559717184698.jpg)
+![positional_camera](assets/positional_camera.jpg)
 
 相机的前方向 `front = (lookat-lookfrom).Normalize()`。
 
@@ -561,9 +561,7 @@ $$
 \end{aligned}
 $$
 
-根据几何关系，我们可以根据 (u, v) 坐标获得成像平面上的点，从而确定一条光线。
-
-相机的详细实现为 [include/Camera.h](include/Camera.h)。
+根据几何关系，我们可以根据 (u, v) 坐标获得成像平面上的点，从而确定一条光线，详细实现为 [include/Camera.h](include/Camera.h)。
 
 代码中含有下节才提到的 `focusDis` 和 `apeture`，当 `focusDis == 1` 且 `apeture == 0` 时相机模型退化成本节模型，即针孔相机。
 
