@@ -7,39 +7,10 @@
 
 using namespace std;
 
-const Vec3f Sky(const Ray & ray) {
-	auto normDir = ray.d.Normalize();
-	float t = 0.5f * (normDir.y + 1.0f);
+// 前向声明
+const Vec3f Sky(const Ray & ray);
 
-	const Vec3f white(1.f);
-	const Vec3f blue(0.5, 0.7, 1);
-	
-	return Vec3f::Lerp(white, blue, t);
-}
-
-bool Hit_Sphere(const Vec3f & center, float radius, const Ray & ray) {
-	// c : center
-	// r : radius
-	// o : ray.o
-	// d : ray.d
-	// 
-	// o + t * d == p
-	// (p-c)^2 == r^2
-	// (d * t + o - c)^2 == r^2
-	// d*d * t^2 + 2*d*(o-c) * t + (o-c)^2 - r^2 = 0
-
-	auto oc = ray.o - center;
-
-	float a = ray.d.Dot(ray.d);
-	float b = 2.f * ray.d.Dot(oc);
-	float c = oc.Dot(oc) - radius * radius;
-
-	float delta = b * b - 4.f * a * c; // 判别式
-	if (delta <= 0.f)
-		return false;
-
-	return true;
-}
+bool Hit_Sphere(const Vec3f & center, float radius, const Ray & ray);
 
 const Vec3f Trace(const Ray & ray) {
 	if (Hit_Sphere({ 0,0,-1 }, 0.5f, ray))
@@ -80,4 +51,38 @@ int main() {
 	rst.close();
 
 	return 0;
+}
+
+const Vec3f Sky(const Ray & ray) {
+	auto normDir = ray.d.Normalize();
+	float t = 0.5f * (normDir.y + 1.0f); // 将法向的范围映射到 [0, 1] 以可视化
+
+	const Vec3f white(1.f);
+	const Vec3f blue(0.5, 0.7, 1);
+
+	return Vec3f::Lerp(white, blue, t); // 线性插值
+}
+
+bool Hit_Sphere(const Vec3f & center, float radius, const Ray & ray) {
+	// c : center
+	// r : radius
+	// o : ray.o
+	// d : ray.d
+	// 
+	// o + t * d == p
+	// (p-c)^2 == r^2
+	// (d * t + o - c)^2 == r^2
+	// d*d * t^2 + 2*d*(o-c) * t + (o-c)^2 - r^2 = 0
+
+	auto oc = ray.o - center;
+
+	float a = ray.d.Dot(ray.d);
+	float b = 2.f * ray.d.Dot(oc);
+	float c = oc.Dot(oc) - radius * radius;
+
+	float delta = b * b - 4.f * a * c; // 判别式
+	if (delta < 0.f)
+		return false;
+
+	return true;
 }

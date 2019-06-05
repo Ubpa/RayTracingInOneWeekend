@@ -38,21 +38,21 @@ bool Sphere::Hit(Ray & ray, HitRecord & rec) const {
 	float c = oc.Dot(oc) - radius * radius;
 
 	float discriminant = b * b - a * c; // 化简
-	if (discriminant <= 0.f)
+	if (discriminant < 0.f)
 		return false;
 
 	float sqrtDiscriminant = sqrt(discriminant);
 
-	float t0 = (-b - sqrtDiscriminant) / a;
+	float t0 = (-b - sqrtDiscriminant) / a; // 较小根
 	if (t0 <= ray.tMin || t0 >= ray.tMax) {
-		float t1 = (-b + sqrtDiscriminant) / a;
+		float t1 = (-b + sqrtDiscriminant) / a; // 较大根
 		if (t1 <= ray.tMin || t1 >= ray.tMax)
-			return false;
+			return false; // 根不再 tMin 和 tMax 间
 
-		ray.tMax = t1;
+		ray.tMax = t1; // 更新 tMax
 	}
 	else
-		ray.tMax = t0;
+		ray.tMax = t0; // 更新 tMax
 
 	rec.p = ray.EndPos();
 	rec.n = (rec.p - center )/ radius;

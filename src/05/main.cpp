@@ -7,15 +7,7 @@
 
 using namespace std;
 
-const Vec3f Sky(const Ray & ray) {
-	auto normDir = ray.d.Normalize();
-	float t = 0.5f * (normDir.y + 1.0f);
-
-	const Vec3f white(1.f);
-	const Vec3f blue(0.5, 0.7, 1);
-	
-	return Vec3f::Lerp(white, blue, t);
-}
+const Vec3f Sky(const Ray & ray);
 
 const Vec3f Trace(Ptr<Hitable> scene, Ray & ray) {
 	HitRecord rec;
@@ -62,4 +54,14 @@ int main() {
 	rst.close();
 
 	return 0;
+}
+
+const Vec3f Sky(const Ray & ray) {
+	auto normDir = ray.d.Normalize();
+	float t = 0.5f * (normDir.y + 1.0f);
+
+	const Vec3f white(1.f);
+	const Vec3f blue(0.5, 0.7, 1);
+
+	return Vec3f::Lerp(white, blue, t); // œﬂ–‘≤Â÷µ
 }

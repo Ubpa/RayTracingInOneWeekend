@@ -1,5 +1,5 @@
 mkdir build
 cd build
 cmake ..
-start RayTracingInAWeekend.sln
+start RayTracingInOneWeekend.sln
 cd ..

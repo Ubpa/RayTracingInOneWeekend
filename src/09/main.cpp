@@ -13,31 +13,9 @@
 
 using namespace std;
 
-const Vec3f Sky(const Ray & ray) {
-	auto normDir = ray.d.Normalize();
-	float t = 0.5f * (normDir.y + 1.0f);
+const Vec3f Sky(const Ray & ray);
 
-	const Vec3f white(1.f);
-	const Vec3f blue(0.5, 0.7, 1);
-	
-	return Vec3f::Lerp(white, blue, t);
-}
-
-const Vec3f Trace(Ptr<Hitable> scene, Ray & ray, int depth) {
-	HitRecord rec;
-	if (scene->Hit(ray, rec)) {
-		if (depth >= 50)
-			return Vec3f(0.f);
-
-		auto scatterRst = rec.material->Scatter(ray, rec);
-		if (scatterRst.isScatter)
-			return scatterRst.attenuation * Trace(scene, scatterRst.ray, depth+1);
-		else
-			return Vec3f(0.f);
-	}
-
-	return Sky(ray);
-}
+const Vec3f Trace(Ptr<Hitable> scene, Ray & ray, int depth);
 
 int main() {
 	int width = 200;
@@ -56,7 +34,7 @@ int main() {
 	auto sphereLeftInner = Sphere::New({ -1, 0, -1 }, -0.45f, Dielectric::New(1.5f));
 	auto sphereRight = Sphere::New({ 1, 0, -1 }, 0.5f, Metal::New(Vec3f(0.8, 0.6, 0.2), 0.2f));
 	auto ground = Sphere::New({ 0, -100.5, -1 }, 100.f, Lambertian::New(Vec3f(0.8f, 0.8f, 0.f)));
-	auto scene = HitableList::New({ sphereLeft, sphereLeftInner, sphereMid, sphereRight, ground });
+	auto scene = HitableList::New({ sphereLeft, /*sphereLeftInner,*/ sphereMid, sphereRight, ground });
 
 	ofstream rst(ROOT_PATH + "data/09.ppm"); // ppm 是一种简单的图片格式
 
@@ -85,4 +63,30 @@ int main() {
 	rst.close();
 
 	return 0;
+}
+
+const Vec3f Sky(const Ray & ray) {
+	auto normDir = ray.d.Normalize();
+	float t = 0.5f * (normDir.y + 1.0f);
+
+	const Vec3f white(1.f);
+	const Vec3f blue(0.5, 0.7, 1);
+
+	return Vec3f::Lerp(white, blue, t); // 线性插值
+}
+
+const Vec3f Trace(Ptr<Hitable> scene, Ray & ray, int depth) {
+	HitRecord rec;
+	if (scene->Hit(ray, rec)) {
+		if (depth >= 50)
+			return Vec3f(0.f);
+
+		auto scatterRst = rec.material->Scatter(ray, rec);
+		if (!scatterRst.isScatter)
+			return Vec3f(0.f);
+
+		return scatterRst.attenuation * Trace(scene, scatterRst.ray, depth + 1);
+	}
+
+	return Sky(ray);
 }

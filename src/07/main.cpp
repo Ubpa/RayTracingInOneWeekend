@@ -9,26 +9,9 @@
 
 using namespace std;
 
-const Vec3f Sky(const Ray & ray) {
-	auto normDir = ray.d.Normalize();
-	float t = 0.5f * (normDir.y + 1.0f);
+const Vec3f Sky(const Ray & ray);
 
-	const Vec3f white(1.f);
-	const Vec3f blue(0.5, 0.7, 1);
-	
-	return Vec3f::Lerp(white, blue, t);
-}
-
-const Vec3f Trace(Ptr<Hitable> scene, Ray & ray) {
-	HitRecord rec;
-	if (scene->Hit(ray, rec)) {
-		Vec3f target = rec.p + rec.n + Util::RandInSphere();
-		Ray newRay(rec.p, target);
-		return 0.5f * Trace(scene, newRay);
-	}
-
-	return Sky(ray);
-}
+const Vec3f Trace(Ptr<Hitable> scene, Ray & ray);
 
 int main() {
 	int width = 200;
@@ -73,4 +56,25 @@ int main() {
 	rst.close();
 
 	return 0;
+}
+
+const Vec3f Sky(const Ray & ray) {
+	auto normDir = ray.d.Normalize();
+	float t = 0.5f * (normDir.y + 1.0f);
+
+	const Vec3f white(1.f);
+	const Vec3f blue(0.5, 0.7, 1);
+
+	return Vec3f::Lerp(white, blue, t); // 线性插值
+}
+
+const Vec3f Trace(Ptr<Hitable> scene, Ray & ray) {
+	HitRecord rec;
+	if (scene->Hit(ray, rec)) {
+		Vec3f dir = rec.n + Util::RandInSphere(); // 漫反射
+		Ray newRay(rec.p, dir.Normalize());
+		return 0.5f * Trace(scene, newRay); // 光照衰减一半
+	}
+
+	return Sky(ray);
 }

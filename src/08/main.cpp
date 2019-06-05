@@ -12,28 +12,9 @@
 
 using namespace std;
 
-const Vec3f Sky(const Ray & ray) {
-	auto normDir = ray.d.Normalize();
-	float t = 0.5f * (normDir.y + 1.0f);
+const Vec3f Sky(const Ray & ray);
 
-	const Vec3f white(1.f);
-	const Vec3f blue(0.5, 0.7, 1);
-	
-	return Vec3f::Lerp(white, blue, t);
-}
-
-const Vec3f Trace(Ptr<Hitable> scene, Ray & ray) {
-	HitRecord rec;
-	if (scene->Hit(ray, rec)) {
-		auto scatterRst = rec.material->Scatter(ray, rec);
-		if (scatterRst.isScatter)
-			return scatterRst.attenuation * Trace(scene, scatterRst.ray);
-		else
-			return Vec3f(0.f);
-	}
-
-	return Sky(ray);
-}
+const Vec3f Trace(Ptr<Hitable> scene, Ray & ray, int depth);
 
 int main() {
 	int width = 200;
@@ -50,7 +31,7 @@ int main() {
 	auto sphereMid = Sphere::New({ 0, 0, -1 }, 0.5f, Lambertian::New(Vec3f(0.8,0.3,0.3)));
 	auto sphereLeft = Sphere::New({ -1, 0, -1 }, 0.5f, Metal::New(Vec3f(0.8, 0.8, 0.8), 0.3f));
 	auto sphereRight = Sphere::New({ 1, 0, -1 }, 0.5f, Metal::New(Vec3f(0.8, 0.6, 0.2), 1.0f));
-	auto ground = Sphere::New({ 0, -100.5, -1 }, 100.f, Lambertian::New(Vec3f(0.5f)));
+	auto ground = Sphere::New({ 0, -100.5, -1 }, 100.f, Lambertian::New(Vec3f(0.8, 0.8, 0)));
 	auto scene = HitableList::New({ sphereLeft, sphereMid, sphereRight, ground });
 
 	ofstream rst(ROOT_PATH + "data/08.ppm"); // ppm 是一种简单的图片格式
@@ -67,7 +48,7 @@ int main() {
 				Vec3f dir = lowerLeft + u * horizontal + v * vertical - pos;
 				Ray ray(pos, dir);
 
-				color += Trace(scene, ray);
+				color += Trace(scene, ray, 0);
 			}
 			color /= float(sampleNum); // 求均值
 			Vec3f gammaColor = Util::Gamma(color);
@@ -80,4 +61,30 @@ int main() {
 	rst.close();
 
 	return 0;
+}
+
+const Vec3f Sky(const Ray & ray) {
+	auto normDir = ray.d.Normalize();
+	float t = 0.5f * (normDir.y + 1.0f);
+
+	const Vec3f white(1.f);
+	const Vec3f blue(0.5, 0.7, 1);
+
+	return Vec3f::Lerp(white, blue, t); // 线性插值
+}
+
+const Vec3f Trace(Ptr<Hitable> scene, Ray & ray, int depth) {
+	HitRecord rec;
+	if (scene->Hit(ray, rec)) {
+		if (depth >= 50) // 过深则停止追踪
+			return Vec3f(0.f);
+
+		auto scatterRst = rec.material->Scatter(ray, rec);
+		if (!scatterRst.isScatter) // 光线被完全吸收
+			return Vec3f(0.f);
+
+		return scatterRst.attenuation * Trace(scene, scatterRst.ray, depth + 1); // 递归求解
+	}
+
+	return Sky(ray);
 }

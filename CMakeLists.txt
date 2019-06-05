@@ -1,5 +1,5 @@
 
-set(PROJECT_NAME "RayTracingInAWeekend")
+set(PROJECT_NAME "RayTracingInOneWeekend")
 
 #---------------------------------------
 macro(SETUP_PROJECT MODE TARGET_NAME STR_TARGET_SOURCES STR_TARGET_LIBS)

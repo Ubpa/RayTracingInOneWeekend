@@ -25,7 +25,7 @@ public:
 
 const ScatterRst Lambertian::Scatter(const Ray & ray, const HitRecord & rec) const {
 	Vec3f dir = rec.n + Util::RandInSphere();
-	Ray scatterRay(rec.p, dir);
+	Ray scatterRay(rec.p, dir.Normalize());
 	return ScatterRst(true, scatterRay, albedo);
 }
 

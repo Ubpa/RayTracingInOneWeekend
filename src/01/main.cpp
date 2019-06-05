@@ -18,6 +18,7 @@ int main(){
 			float g = float(height - j) / float(height);
 			float b = 0.2f;
 
+			// 浮点数颜色 [0, 1] 转化成整数颜色 [0, 255]
 			int ir = int(255.99f * r);
 			int ig = int(255.99f * g);
 			int ib = int(255.99f * b);

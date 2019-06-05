@@ -26,7 +26,7 @@ public:
 
 const ScatterRst Metal::Scatter(const Ray & ray, const HitRecord & rec) const {
 	Vec3f dir = Util::Reflect(ray.d.Normalize(), rec.n) + fuzz * Util::RandInSphere();
-	if (dir.Dot(rec.n) <= 0)
+	if (dir.Dot(rec.n) <= 0) // ±íÃæÄÚ²à
 		return ScatterRst::InValid();
 
 	Ray newRay(rec.p, dir);

@@ -74,7 +74,7 @@ const Vec3f Sky(const Ray & ray) {
 	const Vec3f white(1.f);
 	const Vec3f blue(0.5, 0.7, 1);
 
-	return Vec3f::Lerp(white, blue, t);
+	return Vec3f::Lerp(white, blue, t); // œﬂ–‘≤Â÷µ
 }
 
 const Vec3f Trace(Ptr<Hitable> scene, Ray & ray, int depth) {
@@ -84,10 +84,10 @@ const Vec3f Trace(Ptr<Hitable> scene, Ray & ray, int depth) {
 			return Vec3f(0.f);
 
 		auto scatterRst = rec.material->Scatter(ray, rec);
-		if (scatterRst.isScatter)
-			return scatterRst.attenuation * Trace(scene, scatterRst.ray, depth + 1);
-		else
+		if (!scatterRst.isScatter)
 			return Vec3f(0.f);
+
+		return scatterRst.attenuation * Trace(scene, scatterRst.ray, depth + 1);
 	}
 
 	return Sky(ray);
