@@ -30,7 +30,7 @@
 
 # 02. Vec3
 
-图形程序需要处理几何向量和颜色。一般用 4D向量（齐次坐标，RGBA）。本教程用 3D 就足够了。
+图形程序需要处理几何向量和颜色。一般用 4D 向量（齐次坐标，RGBA）。本教程用 3D 就足够了。
 
 将接口分为几类功能
 
@@ -82,7 +82,7 @@ union {
 >
 > 相机拍摄时，物体相当于投影在了一个虚拟的成像平面（图中灰色平面）上。
 >
-> 我们将电脑的显示屏幕视为该成像平面
+> 我们将电脑的显示屏幕视为该成像平面（脑子里想象下图的显示器就是上图的成像平面，而人就是相机）
 >
 > ![screen](assets/screen.jpg)
 >
@@ -98,11 +98,15 @@ union {
 
 根据几何关系，我们可以用参数坐标 (u, v) 定位成像平面上的一点，并确定一条光线。
 
-> 简单推导下 (u, v) 与成像平面上点的关系
+> 简单推导下 (u, v) 与成像平面上一点的关系
 >
-> 左下角 `lowerLeft = (-2, -1, -1)`，水平方向为 `horizontal = (4, 0, 0)`，竖直方向为 `verticle = (0, 2, 0)`。
+> 左下角坐标为 `lowerLeft = (-2, -1, -1)` 
 >
-> 屏幕上的点为 `target = lowerLeft + u * horizontal + v * verticle`。
+> 水平方向为 `horizontal = (4, 0, 0)` 
+>
+> 竖直方向为 `verticle = (0, 2, 0)` 
+>
+> 屏幕上的点为 `target = lowerLeft + u * horizontal + v * verticle` 
 
 有了光线后，我们要计算光线相应的颜色。现在场景还是空的，光线发出后不会与物体相交。我们先设置一个背景色，给那些没有相交的光线确定一个颜色值。颜色简单实现为蓝色和白色的**线性插值**。
 
@@ -196,7 +200,7 @@ const Vec3f Trace(const Ray & ray) {
 
 [上一节](#C04. 球 Sphere)的球 `Sphere` 继承于 `Hitable`，实现了 `Hit()` 接口，详细可见 [include/Sphere.h](include/Sphere.h)。
 
-为了实现树形的组织，我们需要一个结点类型，它含有多个孩子结点。实现中其为 `HitableList`，实现了 `Hit()` 方法，如下
+为了实现**树形**的组织，我们需要一个结点类型，它含有多个孩子结点。实现中其为 `HitableList`，实现了 `Hit()` 方法，如下
 
 ```c++
 bool HitableList::Hit(Ray & ray, HitRecord & rec) const {
@@ -211,7 +215,7 @@ bool HitableList::Hit(Ray & ray, HitRecord & rec) const {
 
 详细实现为 [include/HitableList.h](include/HitableList.h)。
 
-此外，C++11 引入了一种智能指针 `std::shared_ptr` ，树形结构就很适合使用该智能指针（父节点销毁时，子节点也会自动递归销毁）。此外，用 `using` 语句将其简写成了 `Ptr<T>`。
+此外，C++11 引入了一种**智能指针** `std::shared_ptr` ，树形结构就很适合使用该智能指针（父节点销毁时，子节点也会自动递归销毁）。此外，用 `using` 语句将其简写成了 `Ptr<T>`。
 
 根据 *Effetive Modern C++* 建议，我们使用 `std::make_shared` 来生成智能指针。但 `std::make_shared` 是模板函数，出错误时编译器会吐出一大堆错误，很是烦人。因此，我在类中实现了静态方法 `New`，规避此问题。
 
@@ -341,7 +345,7 @@ const ScatterRst Lambertian::Scatter(const Ray & ray, const HitRecord & rec) con
 }
 ```
 
-详细实现为 [include/Metal.h](include/Metal.h)。
+详细实现为 [include/Lambertian.h](include/Lambertian.h)。
 
 我们再来看金属材质，其遵循简单的反射规律
 
@@ -387,6 +391,8 @@ const ScatterRst Metal::Scatter(const Ray & ray, const HitRecord & rec) const {
 }
 ```
 
+详细实现为 [include/Metal.h](include/Metal.h)。
+
 引入材质后，渲染逻辑变更为
 
 ```c++
@@ -427,8 +433,9 @@ $$
 \eta_i\sin\theta=\eta_t\sin\phi
 $$
 
-则有
+其中 $\eta_i$ 和 $\eta_t$ 是入射侧和折射侧的折射率。
 
+根据三角函数的关系，两边平方，可推得
 $$
 \cos^2\phi=1-\frac{\eta_i^2(1-\cos^2\theta)}{\eta_t^2}
 $$
@@ -483,7 +490,7 @@ const bool Refract(const Vec3f & I, Vec3f N, float ior, Vec3f & T) {
 }
 ```
 
-折射的同时会有**反射**，反射率遵循 Fresnel equations，称为**菲涅尔系数**。折射率比较难算，一个常用的近似公式 Schlick approximation 为
+折射的同时会有**反射**，反射率遵循 Fresnel equations，称为**菲涅尔系数**。反射率比较难算，一个常用的近似公式 Schlick approximation 为
 
 $$
 F(\theta)=F_0+(1-F_0)(1-\cos\theta)^5\\
@@ -561,7 +568,7 @@ $$
 \end{aligned}
 $$
 
-根据几何关系，我们可以根据 (u, v) 坐标获得成像平面上的点，从而确定一条光线，详细实现为 [include/Camera.h](include/Camera.h)。
+我们可以会用参数坐标 (u, v) 获得成像平面上的点，从而确定一条光线，详细实现为 [include/Camera.h](include/Camera.h)。
 
 代码中含有下节才提到的 `focusDis` 和 `apeture`，当 `focusDis == 1` 且 `apeture == 0` 时相机模型退化成本节模型，即针孔相机。
 
