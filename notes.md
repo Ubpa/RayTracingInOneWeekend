@@ -26,7 +26,7 @@
 
 ![01](assets/01.jpg)
 
-完整实现代码为 [src/01/main.cpp](../src/01/main.cpp)。
+完整实现代码为 [src/01/main.cpp](src/01/main.cpp)。
 
 # 02. Vec3
 
@@ -56,9 +56,9 @@ union {
 };
 ```
 
-详细实现为 [include/Vec3.h](../include/Vec3.h)。
+详细实现为 [include/Vec3.h](include/Vec3.h)。
 
-我们可以用 `Vec3` 来优化[上一节](#C01. 输出图像)的[代码](../src/01/main.cpp)，优化后为 [src/02/main.cpp](../src/02/main.cpp)。
+我们可以用 `Vec3` 来优化[上一节](#C01. 输出图像)的[代码](src/01/main.cpp)，优化后为 [src/02/main.cpp](src/02/main.cpp)。
 
 # 03. 光线、相机、背景 Ray, Camera, Background
 
@@ -66,7 +66,7 @@ union {
 
 ![ray](assets/ray.jpg)
 
-详细实现为 [include/Ray.h](../include/Ray.h)。其中，为了简化设计，我们用 `tMin` 和 `tMax` 来描述光线的范围。
+详细实现为 [include/Ray.h](include/Ray.h)。其中，为了简化设计，我们用 `tMin` 和 `tMax` 来描述光线的范围。
 
 光线追踪的核心是从相机（观察点）发射光线，追踪这些光线，计算出光线相应的颜色。
 
@@ -128,7 +128,7 @@ const Vec3f Sky(const Ray & ray) {
 
 ![03](assets/03.jpg)
 
-完整实现代码为 [src/03/main.cpp](../src/03/main.cpp)。
+完整实现代码为 [src/03/main.cpp](src/03/main.cpp)。
 
 # 04. 球 Sphere
 
@@ -176,7 +176,7 @@ const Vec3f Trace(const Ray & ray) {
 
 
 
-完整实现代码为 [src/04/main.cpp](../src/04/main.cpp)。
+完整实现代码为 [src/04/main.cpp](src/04/main.cpp)。
 
 # 05. 表面法向、物体 Surface normals, objects
 
@@ -194,7 +194,7 @@ const Vec3f Trace(const Ray & ray) {
 
 接口 `Hit()` 接受输入 `ray`，输出结果放在 `HitRecord` 中，包含了碰撞点 `p` 和单位法向 `n`。之前提到，为了简化设计，我们用 `tMin` 和 `tMax` 确定了光线的范围，所以 `Hit()` 不需要这些参数。此外 `Hit()` 会直接修改 `ray` 的 `tMax`，使其一直记录着（当前计算到的）最近相交点对应的 t。
 
-[上一节](#C04. 球 Sphere)的球 `Sphere` 继承于 `Hitable`，实现了 `Hit()` 接口，详细可见 [include/Sphere.h](../include/Sphere.h)。
+[上一节](#C04. 球 Sphere)的球 `Sphere` 继承于 `Hitable`，实现了 `Hit()` 接口，详细可见 [include/Sphere.h](include/Sphere.h)。
 
 为了实现树形的组织，我们需要一个结点类型，它含有多个孩子结点。实现中其为 `HitableList`，实现了 `Hit()` 方法，如下
 
@@ -209,7 +209,7 @@ bool HitableList::Hit(Ray & ray, HitRecord & rec) const {
 }
 ```
 
-详细实现为 [include/HitableList.h](../include/HitableList.h)。
+详细实现为 [include/HitableList.h](include/HitableList.h)。
 
 此外，C++11 引入了一种智能指针 `std::shared_ptr` ，树形结构就很适合使用该智能指针（父节点销毁时，子节点也会自动递归销毁）。此外，用 `using` 语句将其简写成了 `Ptr<T>`。
 
@@ -241,7 +241,7 @@ const Vec3f Trace(Ptr<Hitable> scene, Ray & ray) {
 
 ![05](assets/05.jpg)
 
-完整实现代码为 [src/05/main.cpp](../src/05/main.cpp)。
+完整实现代码为 [src/05/main.cpp](src/05/main.cpp)。
 
 # 06. 抗锯齿 Antialiasing
 
@@ -255,7 +255,7 @@ const Vec3f Trace(Ptr<Hitable> scene, Ray & ray) {
 
 ![aa_rst](assets/aa_rst.jpg)
 
-完整实现代码为 [src/06/main.cpp](../src/06/main.cpp)。
+完整实现代码为 [src/06/main.cpp](src/06/main.cpp)。
 
 # 07. 漫反射材质 Diffuse Material
 
@@ -314,7 +314,7 @@ Gamma 校正后，渲染结果为
 
 此外，反射后的部分光线，由于浮点数的精度误差，可能再次与原表面相交，称为 shadow acne problem。我们可以通过将光线偏移一小些距离以避免该问题，因此我们给 `Ray` 的 `tMin` 设置为 `0.001`。
 
-完整实现代码为 [src/07/main.cpp](../src/07/main.cpp)。
+完整实现代码为 [src/07/main.cpp](src/07/main.cpp)。
 
 # 08. 金属 Metal
 
@@ -341,7 +341,7 @@ const ScatterRst Lambertian::Scatter(const Ray & ray, const HitRecord & rec) con
 }
 ```
 
-详细实现为 [include/Metal.h](../include/Metal.h)。
+详细实现为 [include/Metal.h](include/Metal.h)。
 
 我们再来看金属材质，其遵循简单的反射规律
 
@@ -411,7 +411,7 @@ const Vec3f Trace(Ptr<Hitable> scene, Ray & ray, int depth) {
 
 ![08](assets/08.jpg)
 
-完整的实现代码为 [src/08/main.cpp](../src/08/main.cpp)。
+完整的实现代码为 [src/08/main.cpp](src/08/main.cpp)。
 
 # 09. 电介质 Dieletrics
 
@@ -530,7 +530,7 @@ const ScatterRst Dielectric::Scatter(const Ray & ray, const HitRecord & rec) con
 
 ![09_2](assets/09_2.jpg)
 
-测试代码为 [src/09/main.cpp](../src/09/main.cpp)。
+测试代码为 [src/09/main.cpp](src/09/main.cpp)。
 
 # 10. 可定位相机 Positionable Camera
 
@@ -563,7 +563,7 @@ $$
 
 根据几何关系，我们可以根据 (u, v) 坐标获得成像平面上的点，从而确定一条光线。
 
-相机的详细实现为 [include/Camera.h](../include/Camera.h)。
+相机的详细实现为 [include/Camera.h](include/Camera.h)。
 
 代码中含有下节才提到的 `focusDis` 和 `apeture`，当 `focusDis == 1` 且 `apeture == 0` 时相机模型退化成本节模型，即针孔相机。
 
@@ -571,7 +571,7 @@ $$
 
 ![11](assets/10.jpg)
 
-测试代码为 [src/10/main.cpp](../src/10/main.cpp)。
+测试代码为 [src/10/main.cpp](src/10/main.cpp)。
 
 
 # 11. 散焦模糊 Defocus Blur
@@ -586,7 +586,7 @@ $$
 
 对焦距离就是成像平面与相机的距离，这样，成像平面的高度和宽度都会扩大 `focusDis` 倍。
 
-相机的详细实现为 [include/Camera.h](../include/Camera.h)。
+相机的详细实现为 [include/Camera.h](include/Camera.h)。
 
 我们测试一下，渲染结果为
 
@@ -594,11 +594,11 @@ $$
 
 可以看到，蓝色球很清晰，其他球就模糊了
 
-测试代码为 [src/11/main.cpp](../src/11/main.cpp)。
+测试代码为 [src/11/main.cpp](src/11/main.cpp)。
 
 # 12. 下一步
 
-测试代码为 [src/12/main.cpp](../src/12/main.cpp)，渲染结果为
+测试代码为 [src/12/main.cpp](src/12/main.cpp)，渲染结果为
 
 ![final](assets/final.jpg)
 
