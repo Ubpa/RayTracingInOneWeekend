@@ -215,7 +215,7 @@ bool HitableList::Hit(Ray & ray, HitRecord & rec) const {
 
 详细实现为 [include/HitableList.h](include/HitableList.h)。
 
-此外，C++11 引入了一种**智能指针** `std::shared_ptr` ，树形结构就很适合使用该智能指针（父节点销毁时，子节点也会自动递归销毁）。此外，用 `using` 语句将其简写成了 `Ptr<T>`，详细请看 [include\Ptr.h](include\Ptr.h)。
+此外，C++11 引入了一种**智能指针** `std::shared_ptr` ，树形结构就很适合使用该智能指针（父节点销毁时，子节点也会自动递归销毁）。此外，用 `using` 语句将其简写成了 `Ptr<T>`，详细请看 [include/Ptr.h](include/Ptr.h)。
 
 根据 *Effetive Modern C++* 建议，我们使用 `std::make_shared` 来生成智能指针。但 `std::make_shared` 是模板函数，出错误时编译器会吐出一大堆错误，很是烦人。因此，我在类中实现了静态方法 `New`，规避此问题。
 
@@ -674,11 +674,11 @@ int NumCPU() {
 
 射线与盒子的计算原理一句话概括就是求每个维度的相交范围的交集。同时也要与射线的范围 `tMin ~ tMax` 求交集，如果交集为空，则不相交，否则相交，并返回相交范围 `t0 ~ t1` 。
 
-`Box` 的详细实现请看 [include\Box.h](include\Box.h)。
+`Box` 的详细实现请看 [include/Box.h](include/Box.h)。
 
-接下来我们给 `Hitable` 类新增接口 `GetBox()`。`Sphere` 和 `HitableList` 的包围盒计算较为简单，详细实现请查看 [include\Sphere.h](include\Sphere.h) 和 [include\HitableList.h](include\HitableList.h)。
+接下来我们给 `Hitable` 类新增接口 `GetBox()`。`Sphere` 和 `HitableList` 的包围盒计算较为简单，详细实现请查看 [include/Sphere.h](include/Sphere.h) 和 [include/HitableList.h](include/HitableList.h)。
 
-我们为 BVH 中的一个节点也封装一个类 `NodeBVH`，`Hit()` 的详细实现请看 [include\NodeBVH.h](include\NodeBVH.h)。
+我们为 BVH 中的一个节点也封装一个类 `NodeBVH`，`Hit()` 的详细实现请看 [include/NodeBVH.h](include/NodeBVH.h)。
 
 当射线同时击中左盒和右盒时，我们先对盒子靠前的子节点进行相交运算。如果与靠前子节点发生了碰撞，那么 `ray.tMax` 会被更新，利用此对靠后盒子在进行以此交集判断，如果变成与盒子不相交了，就能省去与其节点的相交运算。
 
@@ -686,7 +686,7 @@ int NumCPU() {
 
 接下来的问题就是该如何构建这个 BVH 了。方法有很多，我们实现一种较为简单的方法。
 
-我们依据 `Hitable` 的 `Box` 的中心进行划分。每次划分会挑选一个轴，然后根据中心在该轴上的均值将 `hitables` 分成两部分。所选的轴是方差最大的轴。详细实现请查看 [include\NodeBVH.h](include\NodeBVH.h)。
+我们依据 `Hitable` 的 `Box` 的中心进行划分。每次划分会挑选一个轴，然后根据中心在该轴上的均值将 `hitables` 分成两部分。所选的轴是方差最大的轴。详细实现请查看 [include/NodeBVH.h](include/NodeBVH.h)。
 
 测试代码为 [src/14/main.cpp](src/14/main.cpp)。相比[第 13 节](#13. 并行)，速度可再提升几倍。
 
@@ -708,9 +708,9 @@ L=-\frac{\ln P}{C}
 $$
 在 [0, 1] 上均匀采样 P，则可得到相应的 L。
 
-我们将这类物体封装为 `Volume`，其中的 `boundary` 定义了范围，具体实现为 [include\Volume.h](include\Volume.h)。
+我们将这类物体封装为 `Volume`，其中的 `boundary` 定义了范围，具体实现为 [include/Volume.h](include/Volume.h)。
 
-碰撞后会发生随机的散射，这类材质我们将其封装为 `Isotropy`，具体实现为 [include\Isotropy.h](include\Isotropy.h)。
+碰撞后会发生随机的散射，这类材质我们将其封装为 `Isotropy`，具体实现为 [include/Isotropy.h](include/Isotropy.h)。
 
 测试代码为 [src/15/main.cpp](src/15/main.cpp)，渲染结果如下
 
