@@ -5,7 +5,8 @@
 
 class Sphere : public Hitable {
 public:
-	Sphere(const Vec3f & center, float radius, Ptr<Material> material = nullptr) :center(center), radius(radius), material(material) { }
+	Sphere(const Vec3f & center, float radius, Ptr<Material> material)
+		: center(center), radius(radius), material(material) { }
 
 public:
 	// 生成 Ptr 的便利接口
@@ -22,8 +23,6 @@ public:
 
 	Ptr<Material> material;// 第 08 节引入
 };
-
-// ------------- 实现
 
 bool Sphere::Hit(Ray & ray, HitRecord & rec) const {
 	// o + t * d == p

@@ -3,6 +3,7 @@
 
 #include <cassert>
 #include <cmath>
+#include <type_traits>
 
 template<typename T>
 class Vec3;
@@ -17,16 +18,22 @@ public:
 		: x(static_cast<T>(x)),
 		y(static_cast<T>(y)),
 		z(static_cast<T>(z))
-	{ assert(!std::isnan<double>(x) && !std::isnan<double>(y) && !std::isnan<double>(z)); }
+	{
+		assert(!HasNaN());
+	}
 
-	explicit Vec3(T v) : Vec3(v, v, v) { }
+	template<typename U, typename = std::enable_if_t<std::is_convertible_v<U, T>>>
+	Vec3(U v) : Vec3(static_cast<T>(v), static_cast<T>(v), static_cast<T>(v)) { }
 
-	Vec3() :Vec3(static_cast<T>(0)) {}
+	Vec3() :Vec3(0) {}
 
 	template<typename U>
 	Vec3(const Vec3<U> & v) : Vec3(v.x, v.y, v.z) {}
 
 public:
+	// 异常检测
+	bool HasNaN() const { return std::isnan<double>(x) || std::isnan<double>(y) || std::isnan<double>(z); }
+
 	// 元素获取
 	T & operator[](int n) {
 		assert(n >= 0 && n < 3);
@@ -123,7 +130,7 @@ public:
 		assert(norm != static_cast<T>(0));
 		return *this / norm;
 	}
-	
+
 	// 逐元素相乘
 	const Vec3 operator*(const Vec3 & rhs) const {
 		return { x*rhs.x, y*rhs.y, z*rhs.z };

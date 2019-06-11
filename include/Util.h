@@ -7,12 +7,15 @@
 
 // 用一个命名空间来便利查找接口
 namespace Util {
-	const constexpr float PI = 3.1415926f;
+	constexpr float PI = 3.1415926f;
+	constexpr float LARGE_FLT = 98e8f; // 大浮点数
+	constexpr float DELTA_FLT = 98e-8f; // 小浮点数
+	constexpr float DEFAULT_TMIN = 0.001f;
 
 	// [0, 1)
 	float RandF() {
 		static std::default_random_engine engine;
-		static std::uniform_real_distribution<float> fMap(0.0f, 0.999999f);
+		static std::uniform_real_distribution<float> fMap(0.0f, 1.f - DELTA_FLT);
 		return fMap(engine);
 	}
 
@@ -31,16 +34,16 @@ namespace Util {
 	const Vec3f RandInDisk() {
 		Vec3f p;
 		do {
-			p = 2.0*Vec3f(RandF(), RandF(), 0.f) - Vec3f(1.f, 1.f, 0);
+			p = 2.f * Vec3f(RandF(), RandF(), 0) - Vec3f(1, 1, 0);
 		} while (p.Norm2() >= 1.f);
 
 		return p;
 	}
 
 	const Vec3f Gamma(const Vec3f & color) {
-		float x = std::pow(color.x, 1.0f / 2.2f);
-		float y = std::pow(color.y, 1.0f / 2.2f);
-		float z = std::pow(color.z, 1.0f / 2.2f);
+		float x = std::pow(color.x, 1.f / 2.2f);
+		float y = std::pow(color.y, 1.f / 2.2f);
+		float z = std::pow(color.z, 1.f / 2.2f);
 		return { x,y,z };
 	}
 
@@ -48,8 +51,7 @@ namespace Util {
 	// I 和 N 无需是单位向量
 	// 反射方向的长度等于 I
 	const Vec3f Reflect(const Vec3f & I, const Vec3f & N) {
-		float IoN = I.Dot(N);
-		return I - 2.f * IoN * N;
+		return I - 2.f * I.Dot(N) * N;
 	}
 
 	// I 和 N 是单位向量
@@ -81,8 +83,8 @@ namespace Util {
 
 	// 菲涅尔系数，Schlick 近似公式
 	float Fresnel_Schlick(float ior, float cosTheta) {
-		float F0 = pow((ior - 1) / (ior + 1), 2);
-		return F0 + (1.f - F0)*pow(1 - cosTheta, 5);
+		float F0 = pow((ior - 1.f) / (ior + 1.f), 2);
+		return F0 + (1.f - F0) * pow(1.f - cosTheta, 5);
 	}
 }
 

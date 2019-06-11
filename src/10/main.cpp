@@ -31,11 +31,11 @@ int main() {
 	Camera camera(pos, target, vfov, aspect);
 
 	// 场景
-	auto sphereMid = Sphere::New({ 0, 0, -1 }, 0.5f, Lambertian::New(Vec3f(0.1,0.2,0.5)));
+	auto sphereMid = Sphere::New({ 0, 0, -1 }, 0.5f, Lambertian::New({ 0.1, 0.2, 0.5 }));
 	auto sphereLeft = Sphere::New({ -1, 0, -1 }, 0.5f, Dielectric::New(1.5f));
 	auto sphereLeftInner = Sphere::New({ -1, 0, -1 }, -0.45f, Dielectric::New(1.5f));
-	auto sphereRight = Sphere::New({ 1, 0, -1 }, 0.5f, Metal::New(Vec3f(0.8, 0.6, 0.2), 0.2f));
-	auto ground = Sphere::New({ 0, -100.5, -1 }, 100.f, Lambertian::New(Vec3f(0.8f, 0.8f, 0.f)));
+	auto sphereRight = Sphere::New({ 1, 0, -1 }, 0.5f, Metal::New({ 0.8, 0.6, 0.2 }, 0.2f));
+	auto ground = Sphere::New({ 0, -100.5, -1 }, 100.f, Lambertian::New({ 0.8, 0.8, 0 }));
 	auto scene = HitableList::New({ sphereLeft, sphereLeftInner, sphereMid, sphereRight, ground });
 
 	ofstream rst(ROOT_PATH + "data/10.ppm"); // ppm 是一种简单的图片格式

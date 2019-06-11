@@ -6,7 +6,8 @@
 
 class HitableList : public Hitable {
 public:
-	HitableList(const std::vector<Ptr<Hitable>> & hitables = std::vector<Ptr<Hitable>>{}) : hitables(hitables) {}
+	HitableList(const std::vector<Ptr<Hitable>> & hitables = std::vector<Ptr<Hitable>>{})
+		: hitables(hitables) {}
 
 public:
 	// 生成 Ptr 的便利接口

@@ -2,17 +2,16 @@
 #define _RAY_H_
 
 #include <Vec3.h>
-
-constexpr float LARGE_FLT = 98e10f; // 大浮点数
+#include <Util.h>
 
 class Ray {
 public:
 	// tMin = 0.001f，以避免重复自交的情况
-	Ray(const Vec3f & origin, const Vec3f & dir, float tMin = 0.001f, float tMax = LARGE_FLT)
-		: o(origin), d(dir), tMin(tMin), tMax(tMax) { }
+	Ray(const Vec3f & origin, const Vec3f & dir, float tMin = Util::DEFAULT_TMIN, float tMax = Util::LARGE_FLT)
+		{ Init(origin, dir, tMin, tMax); }
 
 public:
-	void Init(const Vec3f & origin, const Vec3f & dir, float tMin = 0.001f, float tMax = LARGE_FLT);
+	void Init(const Vec3f & origin, const Vec3f & dir, float tMin = Util::DEFAULT_TMIN, float tMax = Util::LARGE_FLT);
 
 	const Vec3f At(float t) const { return o + t * d; }
 	const Vec3f StartPos() const { return this->At(tMin); }
