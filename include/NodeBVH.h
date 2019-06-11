@@ -82,7 +82,6 @@ const Ptr<NodeBVH> NodeBVH::Build(const std::vector<Ptr<Hitable>> & hitables) {
 		return NodeBVH::New(hitables.front());
 
 	// 获取包围盒中心，按轴记录
-
 	std::vector<float> centers[3];
 	for (auto hitable : hitables){
 		auto center = hitable->GetBox().Center();
@@ -91,18 +90,15 @@ const Ptr<NodeBVH> NodeBVH::Build(const std::vector<Ptr<Hitable>> & hitables) {
 	}
 	
 	// 计算中心的方差
-
 	float vars[3];
 	for (int axis = 0; axis < 3; axis++)
 		vars[axis] = Util::Var(centers[axis]);
 
 	// 方差最大的轴即为划分轴，划分值为均值
-	
 	int spiltAxis = (vars[0] > vars[1] && vars[0] > vars[2]) ? 0 : (vars[1] > vars[2] ? 1 : 2);
 	float spiltVal = Util::Mean(centers[spiltAxis]);
 
 	// 根据划分轴和划分值进行划分
-
 	std::vector<Ptr<Hitable>> leftHitables;
 	std::vector<Ptr<Hitable>> rightHitables;
 	for (auto hitable : hitables) {

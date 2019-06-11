@@ -44,6 +44,7 @@ const Box::HitRst Box::Hit(const Ray & ray) const {
 		if (invD < 0.0f)
 			std::swap(t0, t1);
 
+		// ·¶Î§Çó½»
 		tMin = max(t0, tMin);
 		tMax = min(t1, tMax);
 		if (tMax < tMin) {

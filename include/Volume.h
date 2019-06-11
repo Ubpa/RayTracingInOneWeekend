@@ -30,13 +30,14 @@ bool Volume::Hit(Ray & ray, HitRecord & rec) const {
 	if (!boundary->Hit(dRay, dRec))
 		return false;
 
+	// 从边界出发的射线，注意 tMin
 	Ray boundRay(ray.o, ray.d, dRay.tMax + Util::DEFAULT_TMIN);
 	HitRecord boundRec;
-	if (!boundary->Hit(boundRay, boundRec))
+	if (!boundary->Hit(boundRay, boundRec)) // 一般都是击中的，所以这个判断基本没必要
 		return false;
 
-	float t0 = std::max<float>(dRay.tMax, ray.tMin);
-	float t1 = std::min<float>(boundRay.tMax, ray.tMax);
+	float t0 = std::max<float>(dRay.tMax, ray.tMin); // 起
+	float t1 = std::min<float>(boundRay.tMax, ray.tMax); // 终
 
 	float L = (t1 - t0) * boundRay.d.Norm();
 	float hitL = -log(1.f - Util::RandF()) / density;

@@ -132,9 +132,9 @@ Ptr<Hitable> GenScene() {
 					material = Lambertian::New({ Util::RandF()*Util::RandF(), Util::RandF()*Util::RandF(), Util::RandF()*Util::RandF() });
 				else if (choose_mat < 0.95f) // metal
 					material = Metal::New({ 0.5f*(1 + Util::RandF()), 0.5f*(1.f + Util::RandF()), 0.5f*(1.f + Util::RandF()) }, 0.5f*Util::RandF());
-				else {  // glass
+				else // glass
 					material = Dielectric::New(1.5f);
-				}
+
 				scene->push_back(Sphere::New(center, 0.2f, material));
 			}
 		}

@@ -46,12 +46,8 @@
 
 ```c++
 union {
-    struct {
-        T x, y, z;
-    };
-    struct {
-        T r, g, b;
-    };
+    struct { T x, y, z; };
+    struct { T r, g, b; };
     struct { T _data[3]; };
 };
 ```

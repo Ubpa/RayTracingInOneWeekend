@@ -108,6 +108,7 @@ namespace Util {
 
 	// 获取 CPU 的逻辑核心数
 	int NumCPU() {
+		// 根据不同的系统选择对应的实现
 #ifdef WIN32
 		SYSTEM_INFO info;
 		GetSystemInfo(&info);

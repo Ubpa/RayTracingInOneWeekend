@@ -18,14 +18,15 @@ public:
 		: x(static_cast<T>(x)),
 		y(static_cast<T>(y)),
 		z(static_cast<T>(z))
-	{
-		assert(!HasNaN());
-	}
+	{ assert(!HasNaN()); }
 
+	// 该模板函数如果不正确使用，IDE 不报错，编译期才会报出大量的编译错误提示
+	// 而且该函数非常容易就错误使用了
+	// 因此我们使用 std::enable_if 使其在错误使用时隐藏起来
 	template<typename U, typename = std::enable_if_t<std::is_convertible_v<U, T>>>
 	Vec3(U v) : Vec3(static_cast<T>(v), static_cast<T>(v), static_cast<T>(v)) { }
 
-	Vec3() :Vec3(0) {}
+	Vec3() : Vec3(0) {}
 
 	template<typename U>
 	Vec3(const Vec3<U> & v) : Vec3(v.x, v.y, v.z) {}
@@ -161,12 +162,8 @@ public:
 
 public:
 	union { // 常用技巧，使得我们可以方便的获取元素，而不需要通过函数接口，如 x(), y()
-		struct {
-			T x, y, z;
-		};
-		struct {
-			T r, g, b;
-		};
+		struct { T x, y, z; };
+		struct { T r, g, b; };
 		struct { T _data[3]; };
 	};
 };

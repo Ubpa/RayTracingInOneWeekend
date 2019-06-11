@@ -3,9 +3,10 @@
 
 #include <Material.h>
 
+// นโิด
 class Light : public Material {
 public:
-	Light(const Vec3f & L) :L(L) { }
+	Light(const Vec3f & L) : L(L) { }
 
 public:
 	static const Ptr<Light> New(const Vec3f & L) {

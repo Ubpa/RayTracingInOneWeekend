@@ -3,6 +3,7 @@
 
 #include <Material.h>
 
+// 各项异性
 class Isotropy : public Material {
 public:
 	Isotropy(const Vec3f & albedo)
@@ -15,7 +16,7 @@ public:
 
 public:
 	virtual const ScatterRst Scatter(const Ray & ray, const HitRecord & rec) const override {
-		return { true, {rec.p, Util::RandOnSphere()}, albedo };
+		return { true, {rec.p, Util::RandOnSphere()}, albedo }; // 随机散射
 	}
 
 public:
