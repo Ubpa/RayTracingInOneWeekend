@@ -616,3 +616,37 @@ $$
 - 并行
 
 加油！
+
+# 13. 并行
+
+CPU 有多个核心，为了都利用上，可以使用多线程。渲染可以很好地进行并行化，最简单的方式就是将 `width * height` 个像素的计算任务平均分给多个线程。
+
+首先要获取 CPU 的核心数，为了同时支持 Windows 和 Linux，使用了预处理指令 `#ifdef` 等。
+
+```c++
+#ifdef WIN32
+#include <windows.h>
+#elif defined linux
+#include <unistd.h>
+#else
+#error not support system
+#endif
+
+int NumCPU() {
+#ifdef WIN32
+    SYSTEM_INFO info;
+    GetSystemInfo(&info);
+    return static_cast<int>(info.dwNumberOfProcessors);
+#elif defined linux
+    int cpu_num = sysconf(_SC_NPROCESSORS_ONLN);
+    return cpu_num;
+#else
+#error not support system
+#endif
+}
+```
+
+接下来可以用 `std::thread` 来实现多线程。
+
+测试代码为 [src/13/main.cpp](src/13/main.cpp)。
+

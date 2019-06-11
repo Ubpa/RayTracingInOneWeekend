@@ -12,17 +12,22 @@
 #include <ROOT_PATH.h>
 
 #include <fstream>
+#include <thread>
+#include <array>
 
 using namespace std;
 
 const Vec3f Sky(const Ray & ray);
 const Vec3f Trace(Ptr<Hitable> scene, Ray & ray, int depth);
 Ptr<Hitable> GenScene();
+void SaveImg(const vector<vector<Vec3f>> & img);
 
 int main() {
-	int width = 200;
-	int height = 100;
-	int sampleNum = 1;
+	constexpr int width = 200;
+	constexpr int height = 100;
+	int sampleNum = 32;
+	int cpuNum = Util::NumCPU();
+	printf("CPU : %d\n", cpuNum);
 
 	// 相机参数
 	Vec3f pos(13, 2, 3);
@@ -36,33 +41,45 @@ int main() {
 	// 场景
 	auto scene = GenScene();
 
-	ofstream rst(ROOT_PATH + "data/12.ppm"); // ppm 是一种简单的图片格式
+	vector<vector<Vec3f>> img(height, vector<Vec3f>(width)); // 先行后列
 
-	rst << "P3\n" << width << " " << height << "\n255\n";
+	vector<thread> workers;
+	vector<int> pixelNums(cpuNum, 0);
+	for (int id = 0; id < cpuNum; id++) {
+		workers.push_back(thread([=, &img, &pixelNums]() {
+			for (int idx = id; idx < width*height; idx += cpuNum) {
+				int y = idx / width;
+				int x = idx - y * width;
+				
+				Vec3f color(0);
+				for (int k = 0; k < sampleNum; k++) {
+					float u = (x + Util::RandF()) / width;
+					float v = (height - y + Util::RandF()) / height;
 
-	for (int j = 0; j < height; j++) { // 从上至下
-		for (int i = 0; i < width; i++) { // 从左至右
-			Vec3f color(0.f);
-			for (int k = 0; k < sampleNum; k++) { // 多重采样
-				float u = (i + Util::RandF()) / width;
-				float v = (height - j + Util::RandF()) / height;
+					Ray ray = camera.GenRay(u, v);
 
-				Ray ray = camera.GenRay(u, v);
+					color += Trace(scene, ray, 0);
+				}
+				img[y][x] = color / (float)sampleNum;
 
-				color += Trace(scene, ray, 0);
+				pixelNums[id]++;
+
+				int sum = 0;
+				for (auto pixelNum : pixelNums)
+					sum += pixelNum;
+				float rate = sum / float(width*height);
+				printf("\r%.2f%% ...", rate*100.f);
 			}
-			color /= float(sampleNum); // 求均值
-			Vec3f gammaColor = Util::Gamma(color);
-
-			Vec3i iGammaColor = 255.99f * gammaColor;
-			rst << iGammaColor.r << " " << iGammaColor.g << " " << iGammaColor.b << endl;
-
-			float rate = float(j*width + i) / float(width*height);
-			printf("\r%.2f%% ...", rate*100.f);
-		}
+		}));
 	}
+	for (auto & worker : workers) // 主线程等待所有子线程完成任务
+		worker.join();
 
-	rst.close();
+	printf("\n"
+		"Evaluate done\n"
+		"Save image...\n");
+
+	SaveImg(img);
 
 	return 0;
 }
@@ -124,4 +141,25 @@ Ptr<Hitable> GenScene() {
 	scene->Add(Sphere::New({ 4, 1, 0 }, 1.f, Metal::New({ 0.7, 0.6, 0.5 }, 0.f)));
 
 	return scene;
+}
+
+void SaveImg(const vector<vector<Vec3f>> & img) {
+	int width = img.front().size();
+	int height = img.size();
+
+	ofstream rst(ROOT_PATH + "data/13.ppm"); // ppm 是一种简单的图片格式
+
+	rst << "P3\n" << width << " " << height << "\n255\n";
+
+	for (int j = 0; j < height; j++) { // 从上至下
+		for (int i = 0; i < width; i++) { // 从左至右
+
+			Vec3f gammaColor = Util::Gamma(img[j][i]);
+
+			Vec3i iGammaColor = 255.99f * gammaColor;
+			rst << iGammaColor.r << " " << iGammaColor.g << " " << iGammaColor.b << endl;
+		}
+	}
+
+	rst.close();
 }

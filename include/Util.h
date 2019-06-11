@@ -5,6 +5,15 @@
 
 #include <random>
 
+#ifdef WIN32
+#include <windows.h>
+#elif defined linux
+#include <unistd.h>
+#else
+#error not support system
+#endif
+
+
 // 用一个命名空间来便利查找接口
 namespace Util {
 	constexpr float PI = 3.1415926f;
@@ -85,6 +94,19 @@ namespace Util {
 	float Fresnel_Schlick(float ior, float cosTheta) {
 		float F0 = pow((ior - 1.f) / (ior + 1.f), 2);
 		return F0 + (1.f - F0) * pow(1.f - cosTheta, 5);
+	}
+
+	int NumCPU() {
+#ifdef WIN32
+		SYSTEM_INFO info;
+		GetSystemInfo(&info);
+		return static_cast<int>(info.dwNumberOfProcessors);
+#elif defined linux
+		int cpu_num = sysconf(_SC_NPROCESSORS_ONLN);
+		return cpu_num;
+#else
+#error not support system
+#endif
 	}
 }
 
