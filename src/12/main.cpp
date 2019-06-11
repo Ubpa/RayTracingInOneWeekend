@@ -98,7 +98,7 @@ Ptr<Hitable> GenScene() {
 	auto scene = HitableList::New();
 
 	auto ground = Sphere::New({ 0, -1000, 0 }, 1000.f, Lambertian::New(Vec3f{ 0.5f }));
-	scene->Add(ground);
+	scene->push_back(ground);
 
 	int i = 1;
 	for (int a = -11; a < 11; a++) {
@@ -114,14 +114,14 @@ Ptr<Hitable> GenScene() {
 				else {  // glass
 					material = Dielectric::New(1.5f);
 				}
-				scene->Add(Sphere::New(center, 0.2f, material));
+				scene->push_back(Sphere::New(center, 0.2f, material));
 			}
 		}
 	}
 
-	scene->Add(Sphere::New({ 0, 1, 0 }, 1.f, Dielectric::New(1.5f)));
-	scene->Add(Sphere::New({ -4, 1, 0 }, 1.f, Lambertian::New({ 0.4, 0.2, 0.1 })));
-	scene->Add(Sphere::New({ 4, 1, 0 }, 1.f, Metal::New({ 0.7, 0.6, 0.5 }, 0.f)));
+	scene->push_back(Sphere::New({ 0, 1, 0 }, 1.f, Dielectric::New(1.5f)));
+	scene->push_back(Sphere::New({ -4, 1, 0 }, 1.f, Lambertian::New({ 0.4, 0.2, 0.1 })));
+	scene->push_back(Sphere::New({ 4, 1, 0 }, 1.f, Metal::New({ 0.7, 0.6, 0.5 }, 0.f)));
 
 	return scene;
 }

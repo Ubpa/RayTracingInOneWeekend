@@ -17,6 +17,10 @@ public:
 public:
 	virtual bool Hit(Ray & ray, HitRecord & rec) const override;
 
+	virtual const Box GetBox() const override { // 第 14 节引入
+		return { center - Vec3f(radius), center + Vec3f(radius) };
+	}
+
 public:
 	Vec3f center;
 	float radius;

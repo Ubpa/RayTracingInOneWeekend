@@ -1,5 +1,5 @@
 #include <Sphere.h>
-#include <HitableList.h>
+#include <NodeBVH.h>
 
 #include <Lambertian.h>
 #include <Metal.h>
@@ -18,7 +18,7 @@
 using namespace std;
 
 const Vec3f Sky(const Ray & ray);
-const Vec3f Trace(Ptr<Hitable> scene, Ray & ray, int depth);
+const Vec3f Trace(Ptr<Hitable> balls, Ray & ray, int depth);
 Ptr<Hitable> GenScene();
 void SaveImg(const vector<vector<Vec3f>> & img);
 
@@ -39,14 +39,14 @@ int main() {
 	Camera camera(pos, target, vfov, aspect, aperture, focusDist);
 
 	// 场景
-	auto scene = GenScene();
+	auto balls = GenScene();
 
-	vector<vector<Vec3f>> img(height, vector<Vec3f>(width)); // 先行后列
+	vector<vector<Vec3f>> img(height, vector<Vec3f>(width)); // 行主序
 
 	vector<thread> workers;
-	vector<int> pixelNums(cpuNum, 0);
+	vector<int> pixelNums(cpuNum, 0); // 用于记录每个 worker 计算完成的 pixel 数
 	for (int id = 0; id < cpuNum; id++) {
-		workers.push_back(thread([=, &img, &pixelNums]() {
+		workers.push_back(thread([=, &img, &pixelNums]() { // 使用 lambda 函数，灵活
 			for (int idx = id; idx < width*height; idx += cpuNum) {
 				int y = idx / width;
 				int x = idx - y * width;
@@ -58,9 +58,9 @@ int main() {
 
 					Ray ray = camera.GenRay(u, v);
 
-					color += Trace(scene, ray, 0);
+					color += Trace(balls, ray, 0);
 				}
-				img[y][x] = color / (float)sampleNum;
+				img[y][x] = color / (float)sampleNum; // 图像是行主序的，因此不是 img[x][y]
 
 				pixelNums[id]++;
 
@@ -112,10 +112,10 @@ const Vec3f Trace(Ptr<Hitable> scene, Ray & ray, int depth) {
 
 Ptr<Hitable> GenScene() {
 	int n = 500;
-	auto scene = HitableList::New();
+	vector<Ptr<Hitable>> balls;
 
 	auto ground = Sphere::New({ 0, -1000, 0 }, 1000.f, Lambertian::New(Vec3f{ 0.5f }));
-	scene->push_back(ground);
+	balls.push_back(ground);
 
 	int i = 1;
 	for (int a = -11; a < 11; a++) {
@@ -131,23 +131,23 @@ Ptr<Hitable> GenScene() {
 				else {  // glass
 					material = Dielectric::New(1.5f);
 				}
-				scene->push_back(Sphere::New(center, 0.2f, material));
+				balls.push_back(Sphere::New(center, 0.2f, material));
 			}
 		}
 	}
 
-	scene->push_back(Sphere::New({ 0, 1, 0 }, 1.f, Dielectric::New(1.5f)));
-	scene->push_back(Sphere::New({ -4, 1, 0 }, 1.f, Lambertian::New({ 0.4, 0.2, 0.1 })));
-	scene->push_back(Sphere::New({ 4, 1, 0 }, 1.f, Metal::New({ 0.7, 0.6, 0.5 }, 0.f)));
+	balls.push_back(Sphere::New({ 0, 1, 0 }, 1.f, Dielectric::New(1.5f)));
+	balls.push_back(Sphere::New({ -4, 1, 0 }, 1.f, Lambertian::New({ 0.4, 0.2, 0.1 })));
+	balls.push_back(Sphere::New({ 4, 1, 0 }, 1.f, Metal::New({ 0.7, 0.6, 0.5 }, 0.f)));
 
-	return scene;
+	return NodeBVH::Build(balls);
 }
 
 void SaveImg(const vector<vector<Vec3f>> & img) {
 	int width = img.front().size();
 	int height = img.size();
 
-	ofstream rst(ROOT_PATH + "data/13.ppm"); // ppm 是一种简单的图片格式
+	ofstream rst(ROOT_PATH + "data/14.ppm"); // ppm 是一种简单的图片格式
 
 	rst << "P3\n" << width << " " << height << "\n255\n";
 

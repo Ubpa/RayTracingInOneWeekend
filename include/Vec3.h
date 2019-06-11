@@ -34,6 +34,14 @@ public:
 	// 异常检测
 	bool HasNaN() const { return std::isnan<double>(x) || std::isnan<double>(y) || std::isnan<double>(z); }
 
+	// 最值
+	static const Vec3 Min(const Vec3 & lhs, const Vec3 & rhs){
+		return { std::min(lhs.x,rhs.x), std::min(lhs.y,rhs.y), std::min(lhs.z,rhs.z) };
+	}
+	static const Vec3 Max(const Vec3 & lhs, const Vec3 & rhs) {
+		return { std::max(lhs.x,rhs.x), std::max(lhs.y,rhs.y), std::max(lhs.z,rhs.z) };
+	}
+
 	// 元素获取
 	T & operator[](int n) {
 		assert(n >= 0 && n < 3);

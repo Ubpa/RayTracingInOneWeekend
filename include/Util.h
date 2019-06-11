@@ -5,6 +5,7 @@
 
 #include <random>
 
+// 用于获取 CPU 核心数
 #ifdef WIN32
 #include <windows.h>
 #elif defined linux
@@ -96,6 +97,7 @@ namespace Util {
 		return F0 + (1.f - F0) * pow(1.f - cosTheta, 5);
 	}
 
+	// 获取 CPU 的逻辑核心数
 	int NumCPU() {
 #ifdef WIN32
 		SYSTEM_INFO info;
@@ -107,6 +109,29 @@ namespace Util {
 #else
 #error not support system
 #endif
+	}
+
+	// 均值
+	template<typename T>
+	T Mean(const std::vector<T> & vals) {
+		auto rst = static_cast<T>(0);
+		for (const auto & val : vals)
+			rst += val;
+		return rst / static_cast<T>(vals.size());
+	}
+
+	// 方差
+	template<typename T>
+	T Var(const std::vector<T> & vals) {
+		auto rst = static_cast<T>(0);
+
+		auto mean = Mean(vals);
+		for (const auto & val : vals) {
+			auto diff = val - mean;
+			rst += diff * diff;
+		}
+
+		return rst / static_cast<T>(vals.size());
 	}
 }
 

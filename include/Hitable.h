@@ -2,11 +2,8 @@
 #define _HITABLE_H_
 
 #include <Ray.h>
-
-#include <memory>
-
-template<typename T>
-using Ptr = std::shared_ptr<T>; // 智能指针，简写
+#include <Ptr.h>
+#include <Box.h> // 第 14 节引入
 
 class Material; // 前向声明
 
@@ -22,6 +19,8 @@ public:
 	// 因为 Ray 中含有 tMin 和 tMax，所以这里不需要输入相应参数
 	// 如果相交，函数会修改 ray 的 tMax
 	virtual bool Hit(Ray & ray, HitRecord & rec) const = 0;
+
+	virtual const Box GetBox() const = 0; // 第 14 节引入
 };
 
 #endif // !_HITABLE_H_

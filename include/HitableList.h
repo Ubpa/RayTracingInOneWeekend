@@ -4,10 +4,10 @@
 #include <Hitable.h>
 #include <vector>
 
-class HitableList : public Hitable {
+class HitableList : public Hitable, public std::vector<Ptr<Hitable>> {
 public:
 	HitableList(const std::vector<Ptr<Hitable>> & hitables = std::vector<Ptr<Hitable>>{})
-		: hitables(hitables) {}
+		: std::vector<Ptr<Hitable>>(hitables) {}
 
 public:
 	// 生成 Ptr 的便利接口
@@ -18,22 +18,25 @@ public:
 public:
 	virtual bool Hit(Ray & ray, HitRecord & rec) const override;
 
-public:
-	void Add(Ptr<Hitable> hitable) { hitables.push_back(hitable); }
-
-private:
-	std::vector<Ptr<Hitable>> hitables;
+	virtual const Box GetBox() const override; // 第 14 节引入
 };
 
 // ------------- 实现
 
 bool HitableList::Hit(Ray & ray, HitRecord & rec) const {
 	bool isHit = false;
-	for (auto hitable : hitables) {
+	for (auto hitable : *this) {
 		if (hitable->Hit(ray, rec))
 			isHit = true;
 	}
 	return isHit;
+}
+
+const Box HitableList::GetBox() const {
+	Box box;
+	for (auto hitable : *this)
+		box = box.UnionWith(hitable->GetBox());
+	return box;
 }
 
 #endif // !_HITABLE_LIST_H_
