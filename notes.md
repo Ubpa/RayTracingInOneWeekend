@@ -690,3 +690,29 @@ int NumCPU() {
 
 测试代码为 [src/14/main.cpp](src/14/main.cpp)。相比[第 13 节](#13. 并行)，速度可再提升几倍。
 
+# 15. 体积 Volume
+
+我们来渲染雾效，雾可以将其视为一大堆微小的粒子组成的物体。光线进入其中会发生随机的散射， 满足规律
+$$
+\mathbf{d}P = C\mathbf{d}L
+$$
+一个微元距离 $\mathbf{d}L$ 后，光线发生散射的概率为 $\mathbf{d}P$。
+
+一段距离 L 后不发生散射的概率为
+$$
+P=\lim\limits_{n\to\infty}(1-C\frac{L}{n})^n=e^{-CL}
+$$
+则有
+$$
+L=-\frac{\ln P}{C}
+$$
+在 [0, 1] 上均匀采样 P，则可得到相应的 L。
+
+我们将这类物体封装为 `Volume`，其中的 `boundary` 定义了范围，具体实现为 [include\Volume.h](include\Volume.h)。
+
+碰撞后会发生随机的散射，这类材质我们将其封装为 `Isotropy`，具体实现为 [include\Isotropy.h](include\Isotropy.h)。
+
+测试代码为 [src/15/main.cpp](src/15/main.cpp)，渲染结果如下
+
+![15](assets/15.jpg)
+

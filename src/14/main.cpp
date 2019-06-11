@@ -26,7 +26,11 @@ int main() {
 	int width = 200;
 	int height = 100;
 	int sampleNum = 32;
+#ifdef NDEBUG // release
 	int cpuNum = Util::NumCPU();
+#else
+	int cpuNum = 1;
+#endif // NDEBUG
 	printf("CPU : %d\n", cpuNum);
 
 	// 相机参数

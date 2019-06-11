@@ -39,6 +39,15 @@ namespace Util {
 		return p;
 	}
 
+	const Vec3f RandOnSphere() {
+		Vec3f p;
+		do {
+			p = 2.0*Vec3f(RandF(), RandF(), RandF()) - Vec3f(1.f);
+		} while (p.Norm2() >= 1.f);
+
+		return p.Normalize();
+	}
+
 	// [0, 1)
 	// z Îª 0£¬ÊÇÈßÓàµÄ
 	const Vec3f RandInDisk() {
