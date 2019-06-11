@@ -716,3 +716,34 @@ $$
 
 ![15](assets/15.jpg)
 
+# 16. 光源 Light
+
+之前我们一直用背景来打光，现在我们来实现一个简单的光源。
+
+我们将光源视为一种材质，它能发光，不散射光。为此，我们给 `Material` 新增一个接口 `emit()`，默认返回 `Vec3f(0)`。对于光源，`emit()` 返回光的发光值 `L`。详细的实现为 [include/Light.h](include/Light.h)。
+
+新增了 `emit()` 后，渲染逻辑相应更改为
+
+```c++
+const Vec3f Trace(Ptr<Hitable> scene, Ray & ray, int depth) {
+	HitRecord rec;
+	if (scene->Hit(ray, rec)) {
+		if (depth >= 50)
+			return 0;
+
+		auto scatterRst = rec.material->Scatter(ray, rec);
+		if (!scatterRst.isScatter)
+			return rec.material->Emit();
+
+		return rec.material->Emit() + scatterRst.attenuation * Trace(scene, scatterRst.ray, depth + 1);
+	}
+
+	// return Sky(ray); 去除背景
+	return 0;
+}
+```
+
+测试代码为 [src/16/main.cpp](src/16/main.cpp)，渲染结果为
+
+![16](assets/16.jpg)
+

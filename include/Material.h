@@ -19,6 +19,8 @@ struct ScatterRst {
 class Material {
 public:
 	virtual const ScatterRst Scatter(const Ray & ray, const HitRecord & rec) const = 0;
+
+	virtual const Vec3f Emit() const { return 0; } // 第 16 节引入
 };
 
 #endif // !_MATERIAL_H_
