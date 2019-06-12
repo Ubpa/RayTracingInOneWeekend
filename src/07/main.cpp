@@ -18,25 +18,25 @@ int main() {
 	int height = 100;
 	int sampleNum = 100;
 
-	// Ïà»ú²ÎÊı
+	// ç›¸æœºå‚æ•°
 	Vec3f pos(0.f);
 	Vec3f lowerLeft(-2, -1, -1);
 	Vec3f horizontal(4, 0, 0);
 	Vec3f vertical(0, 2, 0);
 
-	// ³¡¾°
+	// åœºæ™¯
 	auto sphere = Sphere::New({ 0, 0, -1 }, 0.5f);
 	auto ground = Sphere::New({ 0, -100.5, -1 }, 100.f);
 	auto scene = HitableList::New({ sphere,ground });
 
-	ofstream rst(ROOT_PATH + "data/07.ppm"); // ppm ÊÇÒ»ÖÖ¼òµ¥µÄÍ¼Æ¬¸ñÊ½
+	ofstream rst(ROOT_PATH + "data/07.ppm"); // ppm æ˜¯ä¸€ç§ç®€å•çš„å›¾ç‰‡æ ¼å¼
 
 	rst << "P3\n" << width << " " << height << "\n255\n";
 
-	for (int j = 0; j < height; j++) { // ´ÓÉÏÖÁÏÂ
-		for (int i = 0; i < width; i++) { // ´Ó×óÖÁÓÒ
+	for (int j = 0; j < height; j++) { // ä»ä¸Šè‡³ä¸‹
+		for (int i = 0; i < width; i++) { // ä»å·¦è‡³å³
 			Vec3f color(0.f);
-			for (int k = 0; k < sampleNum; k++) { // ¶àÖØ²ÉÑù
+			for (int k = 0; k < sampleNum; k++) { // å¤šé‡é‡‡æ ·
 				float u = (i + Util::RandF()) / width;
 				float v = (height - j + Util::RandF()) / height;
 
@@ -45,7 +45,7 @@ int main() {
 
 				color += Trace(scene, ray);
 			}
-			color /= float(sampleNum); // Çó¾ùÖµ
+			color /= float(sampleNum); // æ±‚å‡å€¼
 			Vec3f gammaColor = Util::Gamma(color);
 
 			Vec3i iGammaColor = 255.99f * gammaColor;
@@ -65,15 +65,15 @@ const Vec3f Sky(const Ray & ray) {
 	const Vec3f white(1.f);
 	const Vec3f blue(0.5, 0.7, 1);
 
-	return Vec3f::Lerp(white, blue, t); // ÏßĞÔ²åÖµ
+	return Vec3f::Lerp(white, blue, t); // çº¿æ€§æ’å€¼
 }
 
 const Vec3f Trace(Ptr<Hitable> scene, Ray & ray) {
 	HitRecord rec;
 	if (scene->Hit(ray, rec)) {
-		Vec3f dir = rec.n + Util::RandInSphere(); // Âş·´Éä
+		Vec3f dir = rec.n + Util::RandInSphere(); // æ¼«åå°„
 		Ray newRay(rec.p, dir.Normalize());
-		return 0.5f * Trace(scene, newRay); // ¹âÕÕË¥¼õÒ»°ë
+		return 0.5f * Trace(scene, newRay); // å…‰ç…§è¡°å‡ä¸€åŠ
 	}
 
 	return Sky(ray);

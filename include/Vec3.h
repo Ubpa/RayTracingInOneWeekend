@@ -20,9 +20,9 @@ public:
 		z(static_cast<T>(z))
 	{ assert(!HasNaN()); }
 
-	// ¸ÃÄ£°åº¯ÊıÈç¹û²»ÕıÈ·Ê¹ÓÃ£¬IDE ²»±¨´í£¬±àÒëÆÚ²Å»á±¨³ö´óÁ¿µÄ±àÒë´íÎóÌáÊ¾
-	// ¶øÇÒ¸Ãº¯Êı·Ç³£ÈİÒ×¾Í´íÎóÊ¹ÓÃÁË
-	// Òò´ËÎÒÃÇÊ¹ÓÃ std::enable_if Ê¹ÆäÔÚ´íÎóÊ¹ÓÃÊ±Òş²ØÆğÀ´
+	// è¯¥æ¨¡æ¿å‡½æ•°å¦‚æœä¸æ­£ç¡®ä½¿ç”¨ï¼ŒIDE ä¸æŠ¥é”™ï¼Œç¼–è¯‘æœŸæ‰ä¼šæŠ¥å‡ºå¤§é‡çš„ç¼–è¯‘é”™è¯¯æç¤º
+	// è€Œä¸”è¯¥å‡½æ•°éå¸¸å®¹æ˜“å°±é”™è¯¯ä½¿ç”¨äº†
+	// å› æ­¤æˆ‘ä»¬ä½¿ç”¨ std::enable_if ä½¿å…¶åœ¨é”™è¯¯ä½¿ç”¨æ—¶éšè—èµ·æ¥
 	template<typename U, typename = std::enable_if_t<std::is_convertible_v<U, T>>>
 	Vec3(U v) : Vec3(static_cast<T>(v), static_cast<T>(v), static_cast<T>(v)) { }
 
@@ -32,10 +32,10 @@ public:
 	Vec3(const Vec3<U> & v) : Vec3(v.x, v.y, v.z) {}
 
 public:
-	// Òì³£¼ì²â
+	// å¼‚å¸¸æ£€æµ‹
 	bool HasNaN() const { return std::isnan<double>(x) || std::isnan<double>(y) || std::isnan<double>(z); }
 
-	// ×îÖµ
+	// æœ€å€¼
 	static const Vec3 Min(const Vec3 & lhs, const Vec3 & rhs){
 		return { std::min(lhs.x,rhs.x), std::min(lhs.y,rhs.y), std::min(lhs.z,rhs.z) };
 	}
@@ -43,7 +43,7 @@ public:
 		return { std::max(lhs.x,rhs.x), std::max(lhs.y,rhs.y), std::max(lhs.z,rhs.z) };
 	}
 
-	// ÔªËØ»ñÈ¡
+	// å…ƒç´ è·å–
 	T & operator[](int n) {
 		assert(n >= 0 && n < 3);
 		return _data[n];
@@ -53,7 +53,7 @@ public:
 		return _data[n];
 	}
 
-	// ÏßĞÔ²åÖµ
+	// çº¿æ€§æ’å€¼
 	template<typename U>
 	static const Vec3 Lerp(const Vec3 & lhs, const Vec3 & rhs, U t) {
 		float tF = static_cast<float>(t);
@@ -67,7 +67,7 @@ public:
 		return Lerp(*this, rhs, t);
 	}
 
-	// ÏßĞÔÔËËã: +, -, *, /
+	// çº¿æ€§è¿ç®—: +, -, *, /
 	const Vec3 operator+(const Vec3 & rhs) const {
 		return { x + rhs.x, y + rhs.y, z + rhs.z };
 	}
@@ -119,7 +119,7 @@ public:
 		return *this;
 	}
 
-	// ÄÚ»ı
+	// å†…ç§¯
 	static T Dot(const Vec3 & lhs, const Vec3 & rhs) {
 		return lhs.x * rhs.x + lhs.y * rhs.y + lhs.z * rhs.z;
 	}
@@ -127,7 +127,7 @@ public:
 		return Dot(*this, rhs);
 	}
 
-	// ÄÚ»ı·¶Êı
+	// å†…ç§¯èŒƒæ•°
 	T Norm2() const {
 		return this->Dot(*this);
 	}
@@ -140,12 +140,12 @@ public:
 		return *this / norm;
 	}
 
-	// ÖğÔªËØÏà³Ë
+	// é€å…ƒç´ ç›¸ä¹˜
 	const Vec3 operator*(const Vec3 & rhs) const {
 		return { x*rhs.x, y*rhs.y, z*rhs.z };
 	}
 
-	// ²æ³Ë
+	// å‰ä¹˜
 	static const Vec3 Cross(const Vec3 & lhs, const Vec3 & rhs) {
 		//  i  j  k
 		// x1 y1 z1
@@ -161,7 +161,7 @@ public:
 	}
 
 public:
-	union { // ³£ÓÃ¼¼ÇÉ£¬Ê¹µÃÎÒÃÇ¿ÉÒÔ·½±ãµÄ»ñÈ¡ÔªËØ£¬¶ø²»ĞèÒªÍ¨¹ıº¯Êı½Ó¿Ú£¬Èç x(), y()
+	union { // å¸¸ç”¨æŠ€å·§ï¼Œä½¿å¾—æˆ‘ä»¬å¯ä»¥æ–¹ä¾¿çš„è·å–å…ƒç´ ï¼Œè€Œä¸éœ€è¦é€šè¿‡å‡½æ•°æ¥å£ï¼Œå¦‚ x(), y()
 		struct { T x, y, z; };
 		struct { T r, g, b; };
 		struct { T _data[3]; };

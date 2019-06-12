@@ -7,7 +7,7 @@
 
 using namespace std;
 
-// Ç°ÏòÉùÃ÷
+// å‰å‘å£°æ˜
 const Vec3f Sky(const Ray & ray);
 
 bool Hit_Sphere(const Vec3f & center, float radius, const Ray & ray);
@@ -23,18 +23,18 @@ int main() {
 	int width = 200;
 	int height = 100;
 
-	// Ïà»ú²ÎÊı
+	// ç›¸æœºå‚æ•°
 	Vec3f pos(0.f);
 	Vec3f lowerLeft(-2, -1, -1);
 	Vec3f horizontal(4, 0, 0);
 	Vec3f vertical(0, 2, 0);
 
-	ofstream rst(ROOT_PATH + "data/04.ppm"); // ppm ÊÇÒ»ÖÖ¼òµ¥µÄÍ¼Æ¬¸ñÊ½
+	ofstream rst(ROOT_PATH + "data/04.ppm"); // ppm æ˜¯ä¸€ç§ç®€å•çš„å›¾ç‰‡æ ¼å¼
 
 	rst << "P3\n" << width << " " << height << "\n255\n";
 
-	for (int j = 0; j < height; j++) { // ´ÓÉÏÖÁÏÂ
-		for (int i = 0; i < width; i++) { // ´Ó×óÖÁÓÒ
+	for (int j = 0; j < height; j++) { // ä»ä¸Šè‡³ä¸‹
+		for (int i = 0; i < width; i++) { // ä»å·¦è‡³å³
 			float u = float(i) / float(width);
 			float v = float(height - j) / float(height);
 
@@ -55,12 +55,12 @@ int main() {
 
 const Vec3f Sky(const Ray & ray) {
 	auto normDir = ray.d.Normalize();
-	float t = 0.5f * (normDir.y + 1.0f); // ½«·¨ÏòµÄ·¶Î§Ó³Éäµ½ [0, 1] ÒÔ¿ÉÊÓ»¯
+	float t = 0.5f * (normDir.y + 1.0f); // å°†æ³•å‘çš„èŒƒå›´æ˜ å°„åˆ° [0, 1] ä»¥å¯è§†åŒ–
 
 	const Vec3f white(1.f);
 	const Vec3f blue(0.5, 0.7, 1);
 
-	return Vec3f::Lerp(white, blue, t); // ÏßĞÔ²åÖµ
+	return Vec3f::Lerp(white, blue, t); // çº¿æ€§æ’å€¼
 }
 
 bool Hit_Sphere(const Vec3f & center, float radius, const Ray & ray) {
@@ -80,7 +80,7 @@ bool Hit_Sphere(const Vec3f & center, float radius, const Ray & ray) {
 	float b = 2.f * ray.d.Dot(oc);
 	float c = oc.Dot(oc) - radius * radius;
 
-	float delta = b * b - 4.f * a * c; // ÅĞ±ğÊ½
+	float delta = b * b - 4.f * a * c; // åˆ¤åˆ«å¼
 	if (delta < 0.f)
 		return false;
 

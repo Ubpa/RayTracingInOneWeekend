@@ -10,7 +10,7 @@ public:
 		: std::vector<Ptr<Hitable>>(hitables) {}
 
 public:
-	// Éú³É Ptr µÄ±ãÀû½Ó¿Ú
+	// ç”Ÿæˆ Ptr çš„ä¾¿åˆ©æ¥å£
 	static Ptr<HitableList> New(const std::vector<Ptr<Hitable>> & hitables = std::vector<Ptr<Hitable>>{}) {
 		return std::make_shared<HitableList>(hitables);
 	}
@@ -18,10 +18,10 @@ public:
 public:
 	virtual bool Hit(Ray & ray, HitRecord & rec) const override;
 
-	virtual const Box GetBox() const override; // µÚ 14 ½ÚÒıÈë
+	virtual const Box GetBox() const override; // ç¬¬ 14 èŠ‚å¼•å…¥
 };
 
-// ------------- ÊµÏÖ
+// ------------- å®ç°
 
 bool HitableList::Hit(Ray & ray, HitRecord & rec) const {
 	bool isHit = false;

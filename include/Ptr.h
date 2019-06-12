@@ -4,6 +4,6 @@
 #include <memory>
 
 template<typename T>
-using Ptr = std::shared_ptr<T>; // ÖÇÄÜÖ¸Õë£¬¼òĞ´
+using Ptr = std::shared_ptr<T>; // æ™ºèƒ½æŒ‡é’ˆï¼Œç®€å†™
 
 #endif // !_PTR_H_

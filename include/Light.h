@@ -3,7 +3,7 @@
 
 #include <Material.h>
 
-// ��Դ
+// นโิด
 class Light : public Material {
 public:
 	Light(const Vec3f & L) : L(L) { }

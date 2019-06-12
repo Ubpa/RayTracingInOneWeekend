@@ -7,47 +7,47 @@
 
 class Camera {
 public:
-	// vfov: verticle field of view£¬×İÏòµÄ½Ç¶È
-	// aspect: width / height£¬¿í¸ß±È
-	// aperture: Í¸¾µÖ±¾¶
-	// focusDis: ¶Ô½¹¾àÀë£¬¾ÍÊÇ×îÇåÎú´¦ÀëÏà»úµÄ¾àÀë
+	// vfov: verticle field of viewï¼Œçºµå‘çš„è§’åº¦
+	// aspect: width / heightï¼Œå®½é«˜æ¯”
+	// aperture: é€é•œç›´å¾„
+	// focusDis: å¯¹ç„¦è·ç¦»ï¼Œå°±æ˜¯æœ€æ¸…æ™°å¤„ç¦»ç›¸æœºçš„è·ç¦»
 	Camera(const Vec3f & pos, const Vec3f & target, float vfov, float aspect,
-		// µÚ 11 ½ÚÒıÈë
+		// ç¬¬ 11 èŠ‚å¼•å…¥
 		float aperture = 0.f, float focusDis = 1.f)
 	{ Init(pos, target, vfov, aspect, aperture, focusDis); }
 
 public:
 	void Init(const Vec3f & pos, const Vec3f & target, float vfov, float aspect,
-		// µÚ 11 ½ÚÒıÈë
+		// ç¬¬ 11 èŠ‚å¼•å…¥
 		float aperture = 0.f, float focusDis = 1.f);
 
 public:
 	const Ray GenRay(float u, float v) const;
 
 private:
-	Vec3f pos; // Ïà»úÎ»ÖÃ
-	Vec3f lowerLeft; // ³ÉÏñÆ½ÃæµÄ×óÏÂ½Ç
+	Vec3f pos; // ç›¸æœºä½ç½®
+	Vec3f lowerLeft; // æˆåƒå¹³é¢çš„å·¦ä¸‹è§’
 
-	Vec3f right; // µ¥Î»ÏòÁ¿
-	Vec3f horizontal; // ³¤¶ÈÎª³ÉÏñÆ½Ãæ¿í¶È
+	Vec3f right; // å•ä½å‘é‡
+	Vec3f horizontal; // é•¿åº¦ä¸ºæˆåƒå¹³é¢å®½åº¦
 
-	Vec3f up; // µ¥Î»ÏòÁ¿
-	Vec3f vertical; // ³¤¶ÈÎª³ÉÏñÆ½Ãæ¸ß¶È
+	Vec3f up; // å•ä½å‘é‡
+	Vec3f vertical; // é•¿åº¦ä¸ºæˆåƒå¹³é¢é«˜åº¦
 
-	// µÚ 11 ½ÚÒıÈë
-	float lensRadius; // Í¸¾µ°ë¾¶
+	// ç¬¬ 11 èŠ‚å¼•å…¥
+	float lensRadius; // é€é•œåŠå¾„
 };
 
-// -------------- ÊµÏÖ
+// -------------- å®ç°
 void Camera::Init(const Vec3f & pos, const Vec3f & target, float vfov, float aspect,
-	// µÚ 11 ½ÚÒıÈë
+	// ç¬¬ 11 èŠ‚å¼•å…¥
 	float aperture, float focusDis)
 {
 	this->pos = pos;
 
-	float theta = vfov / 180.f * Util::PI; // ½Ç¶È×ª»¡¶È
-	float halfHeight = focusDis * tan(theta / 2.f); // ³ÉÏñÆ½Ãæ¸ß¶ÈµÄÒ»°ë
-	float halfWidth = aspect * halfHeight; // ³ÉÏñÆ½Ãæ¿í¶ÈµÄÒ»°ë
+	float theta = vfov / 180.f * Util::PI; // è§’åº¦è½¬å¼§åº¦
+	float halfHeight = focusDis * tan(theta / 2.f); // æˆåƒå¹³é¢é«˜åº¦çš„ä¸€åŠ
+	float halfWidth = aspect * halfHeight; // æˆåƒå¹³é¢å®½åº¦çš„ä¸€åŠ
 
 	lensRadius = aperture / 2.f;
 	Vec3f front = (target - pos).Normalize();
@@ -61,7 +61,7 @@ void Camera::Init(const Vec3f & pos, const Vec3f & target, float vfov, float asp
 }
 
 const Ray Camera::GenRay(float u, float v) const {
-	// µ± lensRadius == 0 Ê±ÍË»¯Îª
+	// å½“ lensRadius == 0 æ—¶é€€åŒ–ä¸º
 	// {pos, lowerLeft + u * horizontal + v * vertical - pos}
 
 	Vec3f target = lowerLeft + u * horizontal + v * vertical;

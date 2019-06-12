@@ -12,15 +12,15 @@ struct ScatterRst {
 	}
 
 	bool isScatter;
-	Ray ray; // ĞÂµÄ¹âÏß
-	Vec3f attenuation; // Ë¥¼õ
+	Ray ray; // æ–°çš„å…‰çº¿
+	Vec3f attenuation; // è¡°å‡
 };
 
 class Material {
 public:
 	virtual const ScatterRst Scatter(const Ray & ray, const HitRecord & rec) const = 0;
 
-	virtual const Vec3f Emit() const { return 0; } // µÚ 16 ½ÚÒıÈë
+	virtual const Vec3f Emit() const { return 0; } // ç¬¬ 16 èŠ‚å¼•å…¥
 };
 
 #endif // !_MATERIAL_H_

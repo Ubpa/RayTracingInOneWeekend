@@ -9,7 +9,7 @@ public:
 		: center(center), radius(radius), material(material) { }
 
 public:
-	// Éú³É Ptr µÄ±ãÀû½Ó¿Ú
+	// ç”Ÿæˆ Ptr çš„ä¾¿åˆ©æ¥å£
 	static Ptr<Sphere> New(const Vec3f & center, float radius, Ptr<Material> material = nullptr) {
 		return std::make_shared<Sphere>(center, radius, material);
 	}
@@ -17,7 +17,7 @@ public:
 public:
 	virtual bool Hit(Ray & ray, HitRecord & rec) const override;
 
-	virtual const Box GetBox() const override { // µÚ 14 ½ÚÒıÈë
+	virtual const Box GetBox() const override { // ç¬¬ 14 èŠ‚å¼•å…¥
 		return { center - Vec3f(radius), center + Vec3f(radius) };
 	}
 
@@ -25,7 +25,7 @@ public:
 	Vec3f center;
 	float radius;
 
-	Ptr<Material> material;// µÚ 08 ½ÚÒıÈë
+	Ptr<Material> material;// ç¬¬ 08 èŠ‚å¼•å…¥
 };
 
 bool Sphere::Hit(Ray & ray, HitRecord & rec) const {
@@ -37,30 +37,30 @@ bool Sphere::Hit(Ray & ray, HitRecord & rec) const {
 	auto oc = ray.o - center;
 
 	float a = ray.d.Dot(ray.d);
-	float b = ray.d.Dot(oc); // »¯¼ò
+	float b = ray.d.Dot(oc); // åŒ–ç®€
 	float c = oc.Dot(oc) - radius * radius;
 
-	float discriminant = b * b - a * c; // »¯¼ò
+	float discriminant = b * b - a * c; // åŒ–ç®€
 	if (discriminant < 0.f)
 		return false;
 
 	float sqrtDiscriminant = sqrt(discriminant);
 
-	float t0 = (-b - sqrtDiscriminant) / a; // ½ÏĞ¡¸ù
+	float t0 = (-b - sqrtDiscriminant) / a; // è¾ƒå°æ ¹
 	if (t0 <= ray.tMin || t0 >= ray.tMax) {
-		float t1 = (-b + sqrtDiscriminant) / a; // ½Ï´ó¸ù
+		float t1 = (-b + sqrtDiscriminant) / a; // è¾ƒå¤§æ ¹
 		if (t1 <= ray.tMin || t1 >= ray.tMax)
-			return false; // ¸ù²»ÔÙ tMin ºÍ tMax ¼ä
+			return false; // æ ¹ä¸å† tMin å’Œ tMax é—´
 
-		ray.tMax = t1; // ¸üĞÂ tMax
+		ray.tMax = t1; // æ›´æ–° tMax
 	}
 	else
-		ray.tMax = t0; // ¸üĞÂ tMax
+		ray.tMax = t0; // æ›´æ–° tMax
 
 	rec.p = ray.EndPos();
 	rec.n = (rec.p - center )/ radius;
 
-	rec.material = material; // µÚ 08 ½ÚÒıÈë
+	rec.material = material; // ç¬¬ 08 èŠ‚å¼•å…¥
 
 	return true;
 }

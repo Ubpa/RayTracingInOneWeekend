@@ -10,12 +10,12 @@ int main() {
 	int width = 200;
 	int height = 100;
 
-	ofstream rst(ROOT_PATH + "data/02.ppm"); // ppm 是一种简单的图片格式
+	ofstream rst(ROOT_PATH + "data/02.ppm"); // ppm 鏄竴绉嶇畝鍗曠殑鍥剧墖鏍煎紡
 
 	rst << "P3\n" << width << " " << height << "\n255\n";
 
-	for (int j = 0; j < height; j++) { // 从上至下
-		for (int i = 0; i < width; i++) { // 从左至右
+	for (int j = 0; j < height; j++) { // 浠庝笂鑷充笅
+		for (int i = 0; i < width; i++) { // 浠庡乏鑷冲彸
 			float r = float(i) / float(width);
 			float g = float(height - j) / float(height);
 			float b = 0.2f;

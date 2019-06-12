@@ -3,24 +3,24 @@
 
 #include <Ray.h>
 #include <Ptr.h>
-#include <Box.h> // µÚ 14 ½ÚÒıÈë
+#include <Box.h> // ç¬¬ 14 èŠ‚å¼•å…¥
 
-class Material; // Ç°ÏòÉùÃ÷
+class Material; // å‰å‘å£°æ˜
 
 struct HitRecord {
-	// float t; ÎÒÃÇÔÚ Ray ÖĞ¼ÇÂ¼ tMin ºÍ tMax
-	Vec3f p; // Åö×²µã
-	Vec3f n; // µ¥Î»·¨Ïò
+	// float t; æˆ‘ä»¬åœ¨ Ray ä¸­è®°å½• tMin å’Œ tMax
+	Vec3f p; // ç¢°æ’ç‚¹
+	Vec3f n; // å•ä½æ³•å‘
 	Ptr<Material> material;
 };
 
 class Hitable {
 public:
-	// ÒòÎª Ray ÖĞº¬ÓĞ tMin ºÍ tMax£¬ËùÒÔÕâÀï²»ĞèÒªÊäÈëÏàÓ¦²ÎÊı
-	// Èç¹ûÏà½»£¬º¯Êı»áĞŞ¸Ä ray µÄ tMax
+	// å› ä¸º Ray ä¸­å«æœ‰ tMin å’Œ tMaxï¼Œæ‰€ä»¥è¿™é‡Œä¸éœ€è¦è¾“å…¥ç›¸åº”å‚æ•°
+	// å¦‚æœç›¸äº¤ï¼Œå‡½æ•°ä¼šä¿®æ”¹ ray çš„ tMax
 	virtual bool Hit(Ray & ray, HitRecord & rec) const = 0;
 
-	virtual const Box GetBox() const = 0; // µÚ 14 ½ÚÒıÈë
+	virtual const Box GetBox() const = 0; // ç¬¬ 14 èŠ‚å¼•å…¥
 };
 
 #endif // !_HITABLE_H_

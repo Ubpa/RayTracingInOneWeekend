@@ -8,17 +8,17 @@ int main(){
 	int width = 200;
 	int height = 100;
 
-	ofstream rst(ROOT_PATH + "data/01.ppm"); // ppm ÊÇÒ»ÖÖ¼òµ¥µÄÍ¼Æ¬¸ñÊ½
+	ofstream rst(ROOT_PATH + "data/01.ppm"); // ppm æ˜¯ä¸€ç§ç®€å•çš„å›¾ç‰‡æ ¼å¼
 
 	rst << "P3\n" << width << " " << height << "\n255\n";
 
-	for (int j = 0; j < height; j++) { // ´ÓÉÏÖÁÏÂ
-		for(int i = 0; i < width; i++) { // ´Ó×óÖÁÓÒ
+	for (int j = 0; j < height; j++) { // ä»ä¸Šè‡³ä¸‹
+		for(int i = 0; i < width; i++) { // ä»å·¦è‡³å³
 			float r = float(i) / float(width);
 			float g = float(height - j) / float(height);
 			float b = 0.2f;
 
-			// ¸¡µãÊıÑÕÉ« [0, 1] ×ª»¯³ÉÕûÊıÑÕÉ« [0, 255]
+			// æµ®ç‚¹æ•°é¢œè‰² [0, 1] è½¬åŒ–æˆæ•´æ•°é¢œè‰² [0, 255]
 			int ir = int(255.99f * r);
 			int ig = int(255.99f * g);
 			int ib = int(255.99f * b);

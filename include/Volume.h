@@ -24,20 +24,20 @@ public:
 };
 
 bool Volume::Hit(Ray & ray, HitRecord & rec) const {
-	Ray dRay(ray.o, ray.d, -Util::LARGE_FLT, Util::LARGE_FLT); // backRay.StartPos() == ray.StartPos()£¬Òò´Ë backRay.tMin ÒªÉèÎª¸ºÊı
+	Ray dRay(ray.o, ray.d, -Util::LARGE_FLT, Util::LARGE_FLT); // backRay.StartPos() == ray.StartPos()ï¼Œå› æ­¤ backRay.tMin è¦è®¾ä¸ºè´Ÿæ•°
 	HitRecord dRec;
 
 	if (!boundary->Hit(dRay, dRec))
 		return false;
 
-	// ´Ó±ß½ç³ö·¢µÄÉäÏß£¬×¢Òâ tMin
+	// ä»è¾¹ç•Œå‡ºå‘çš„å°„çº¿ï¼Œæ³¨æ„ tMin
 	Ray boundRay(ray.o, ray.d, dRay.tMax + Util::DEFAULT_TMIN);
 	HitRecord boundRec;
-	if (!boundary->Hit(boundRay, boundRec)) // Ò»°ã¶¼ÊÇ»÷ÖĞµÄ£¬ËùÒÔÕâ¸öÅĞ¶Ï»ù±¾Ã»±ØÒª
+	if (!boundary->Hit(boundRay, boundRec)) // ä¸€èˆ¬éƒ½æ˜¯å‡»ä¸­çš„ï¼Œæ‰€ä»¥è¿™ä¸ªåˆ¤æ–­åŸºæœ¬æ²¡å¿…è¦
 		return false;
 
-	float t0 = std::max<float>(dRay.tMax, ray.tMin); // Æğ
-	float t1 = std::min<float>(boundRay.tMax, ray.tMax); // ÖÕ
+	float t0 = std::max<float>(dRay.tMax, ray.tMin); // èµ·
+	float t1 = std::min<float>(boundRay.tMax, ray.tMax); // ç»ˆ
 
 	float L = (t1 - t0) * boundRay.d.Norm();
 	float hitL = -log(1.f - Util::RandF()) / density;
@@ -46,7 +46,7 @@ bool Volume::Hit(Ray & ray, HitRecord & rec) const {
 
 	ray.tMax = t0 + hitL / boundRay.d.Norm();
 	rec.p = ray.EndPos();
-	// rec.n ÈßÓà
+	// rec.n å†—ä½™
 	rec.material = material;
 
 	return true;

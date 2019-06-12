@@ -17,7 +17,7 @@ public:
 	};
 	const HitRst Hit(const Ray & ray) const;
 
-	// 合并两个盒子
+	// 鍚堝苟涓や釜鐩掑瓙
 	static const Box Union(const Box & lhs, const Box & rhs);
 	const Box UnionWith(const Box & rhs) const {
 		return Union(*this, rhs);
@@ -44,7 +44,7 @@ const Box::HitRst Box::Hit(const Ray & ray) const {
 		if (invD < 0.0f)
 			std::swap(t0, t1);
 
-		// 范围求交
+		// 鑼冨洿姹備氦
 		tMin = max(t0, tMin);
 		tMax = min(t1, tMax);
 		if (tMax < tMin) {

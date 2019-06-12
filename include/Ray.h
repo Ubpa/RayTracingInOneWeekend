@@ -6,7 +6,7 @@
 
 class Ray {
 public:
-	// tMin = 0.001f£¬ÒÔ±ÜÃâÖØ¸´×Ô½»µÄÇé¿ö
+	// tMin = 0.001fï¼Œä»¥é¿å…é‡å¤è‡ªäº¤çš„æƒ…å†µ
 	Ray(const Vec3f & origin, const Vec3f & dir, float tMin = Util::DEFAULT_TMIN, float tMax = Util::LARGE_FLT)
 		{ Init(origin, dir, tMin, tMax); }
 
@@ -19,12 +19,12 @@ public:
 	const Vec3f InvDir() const { return { 1.f / d.x,1.f / d.y,1.f / d.z }; }
 
 public:
-	Vec3f o; // Æğµã
-	Vec3f d; // ·½Ïò
+	Vec3f o; // èµ·ç‚¹
+	Vec3f d; // æ–¹å‘
 
-	 // ½« tMin ºÍ tMax Ö±½Ó·ÅÔÚ ray ÖĞ£¬¼ò»¯Éè¼Æ
-	float tMin; // ¾ö¶¨ÉäÏßÆğµã
-	float tMax; // ¾ö¶¨ÉäÏßÖÕµã
+	 // å°† tMin å’Œ tMax ç›´æ¥æ”¾åœ¨ ray ä¸­ï¼Œç®€åŒ–è®¾è®¡
+	float tMin; // å†³å®šå°„çº¿èµ·ç‚¹
+	float tMax; // å†³å®šå°„çº¿ç»ˆç‚¹
 };
 
 void Ray::Init(const Vec3f & origin, const Vec3f & dir, float tMin, float tMax) {

@@ -33,7 +33,7 @@ int main() {
 #endif // NDEBUG
 	printf("CPU : %d\n", cpuNum);
 
-	// Ïà»ú²ÎÊı
+	// ç›¸æœºå‚æ•°
 	Vec3f pos(13, 2, 3);
 	Vec3f target(0, 0, 0);
 	float focusDist = 10.0;
@@ -42,15 +42,15 @@ int main() {
 	float aperture = 0.1f;
 	Camera camera(pos, target, vfov, aspect, aperture, focusDist);
 
-	// ³¡¾°
+	// åœºæ™¯
 	auto balls = GenScene();
 
-	vector<vector<Vec3f>> img(height, vector<Vec3f>(width)); // ĞĞÖ÷Ğò
+	vector<vector<Vec3f>> img(height, vector<Vec3f>(width)); // è¡Œä¸»åº
 
 	vector<thread> workers;
-	vector<int> pixelNums(cpuNum, 0); // ÓÃÓÚ¼ÇÂ¼Ã¿¸ö worker ¼ÆËãÍê³ÉµÄ pixel Êı
+	vector<int> pixelNums(cpuNum, 0); // ç”¨äºè®°å½•æ¯ä¸ª worker è®¡ç®—å®Œæˆçš„ pixel æ•°
 	for (int id = 0; id < cpuNum; id++) {
-		workers.push_back(thread([=, &img, &pixelNums]() { // Ê¹ÓÃ lambda º¯Êı£¬Áé»î
+		workers.push_back(thread([=, &img, &pixelNums]() { // ä½¿ç”¨ lambda å‡½æ•°ï¼Œçµæ´»
 			for (int idx = id; idx < width*height; idx += cpuNum) {
 				int y = idx / width;
 				int x = idx - y * width;
@@ -64,7 +64,7 @@ int main() {
 
 					color += Trace(balls, ray, 0);
 				}
-				img[y][x] = color / (float)sampleNum; // Í¼ÏñÊÇĞĞÖ÷ĞòµÄ£¬Òò´Ë²»ÊÇ img[x][y]
+				img[y][x] = color / (float)sampleNum; // å›¾åƒæ˜¯è¡Œä¸»åºçš„ï¼Œå› æ­¤ä¸æ˜¯ img[x][y]
 
 				pixelNums[id]++;
 
@@ -76,7 +76,7 @@ int main() {
 			}
 		}));
 	}
-	for (auto & worker : workers) // Ö÷Ïß³ÌµÈ´ıËùÓĞ×ÓÏß³ÌÍê³ÉÈÎÎñ
+	for (auto & worker : workers) // ä¸»çº¿ç¨‹ç­‰å¾…æ‰€æœ‰å­çº¿ç¨‹å®Œæˆä»»åŠ¡
 		worker.join();
 
 	printf("\n"
@@ -95,7 +95,7 @@ const Vec3f Sky(const Ray & ray) {
 	const Vec3f white(1.f);
 	const Vec3f blue(0.5, 0.7, 1);
 
-	return Vec3f::Lerp(white, blue, t); // ÏßĞÔ²åÖµ
+	return Vec3f::Lerp(white, blue, t); // çº¿æ€§æ’å€¼
 }
 
 const Vec3f Trace(Ptr<Hitable> scene, Ray & ray, int depth) {
@@ -151,12 +151,12 @@ void SaveImg(const vector<vector<Vec3f>> & img) {
 	int width = img.front().size();
 	int height = img.size();
 
-	ofstream rst(ROOT_PATH + "data/14.ppm"); // ppm ÊÇÒ»ÖÖ¼òµ¥µÄÍ¼Æ¬¸ñÊ½
+	ofstream rst(ROOT_PATH + "data/14.ppm"); // ppm æ˜¯ä¸€ç§ç®€å•çš„å›¾ç‰‡æ ¼å¼
 
 	rst << "P3\n" << width << " " << height << "\n255\n";
 
-	for (int j = 0; j < height; j++) { // ´ÓÉÏÖÁÏÂ
-		for (int i = 0; i < width; i++) { // ´Ó×óÖÁÓÒ
+	for (int j = 0; j < height; j++) { // ä»ä¸Šè‡³ä¸‹
+		for (int i = 0; i < width; i++) { // ä»å·¦è‡³å³
 
 			Vec3f gammaColor = Util::Gamma(img[j][i]);
 

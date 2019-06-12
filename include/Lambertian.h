@@ -5,13 +5,13 @@
 
 #include <Util.h>
 
-// Âş·´Éä£¬ÀÊ²®Ä£ĞÍ
+// æ¼«åå°„ï¼Œæœ—ä¼¯æ¨¡å‹
 class Lambertian : public Material {
 public:
 	Lambertian(const Vec3f & albedo) : albedo(albedo) { }
 
 public:
-	// Éú³É Ptr µÄ±ãÀû½Ó¿Ú
+	// ç”Ÿæˆ Ptr çš„ä¾¿åˆ©æ¥å£
 	static Ptr<Lambertian> New(const Vec3f & albedo) {
 		return std::make_shared<Lambertian>(albedo);
 	}
@@ -20,7 +20,7 @@ public:
 	virtual const ScatterRst Scatter(const Ray & ray, const HitRecord & rec) const override;
 
 public:
-	Vec3f albedo; // ·´ÉäÂÊ£¬¼´ÑÕÉ«
+	Vec3f albedo; // åå°„ç‡ï¼Œå³é¢œè‰²
 };
 
 const ScatterRst Lambertian::Scatter(const Ray & ray, const HitRecord & rec) const {

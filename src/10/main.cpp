@@ -23,14 +23,14 @@ int main() {
 	int height = 100;
 	int sampleNum = 100;
 
-	// Ïà»ú²ÎÊı
+	// ç›¸æœºå‚æ•°
 	Vec3f pos(-2,2,1);
 	Vec3f target(0, 0, -1);
 	float vfov = 25;
 	float aspect = float(width) / float(height);
 	Camera camera(pos, target, vfov, aspect);
 
-	// ³¡¾°
+	// åœºæ™¯
 	auto sphereMid = Sphere::New({ 0, 0, -1 }, 0.5f, Lambertian::New({ 0.1, 0.2, 0.5 }));
 	auto sphereLeft = Sphere::New({ -1, 0, -1 }, 0.5f, Dielectric::New(1.5f));
 	auto sphereLeftInner = Sphere::New({ -1, 0, -1 }, -0.45f, Dielectric::New(1.5f));
@@ -38,14 +38,14 @@ int main() {
 	auto ground = Sphere::New({ 0, -100.5, -1 }, 100.f, Lambertian::New({ 0.8, 0.8, 0 }));
 	auto scene = HitableList::New({ sphereLeft, sphereLeftInner, sphereMid, sphereRight, ground });
 
-	ofstream rst(ROOT_PATH + "data/10.ppm"); // ppm ÊÇÒ»ÖÖ¼òµ¥µÄÍ¼Æ¬¸ñÊ½
+	ofstream rst(ROOT_PATH + "data/10.ppm"); // ppm æ˜¯ä¸€ç§ç®€å•çš„å›¾ç‰‡æ ¼å¼
 
 	rst << "P3\n" << width << " " << height << "\n255\n";
 
-	for (int j = 0; j < height; j++) { // ´ÓÉÏÖÁÏÂ
-		for (int i = 0; i < width; i++) { // ´Ó×óÖÁÓÒ
+	for (int j = 0; j < height; j++) { // ä»ä¸Šè‡³ä¸‹
+		for (int i = 0; i < width; i++) { // ä»å·¦è‡³å³
 			Vec3f color(0.f);
-			for (int k = 0; k < sampleNum; k++) { // ¶àÖØ²ÉÑù
+			for (int k = 0; k < sampleNum; k++) { // å¤šé‡é‡‡æ ·
 				float u = (i + Util::RandF()) / width;
 				float v = (height - j + Util::RandF()) / height;
 
@@ -53,7 +53,7 @@ int main() {
 
 				color += Trace(scene, ray,0);
 			}
-			color /= float(sampleNum); // Çó¾ùÖµ
+			color /= float(sampleNum); // æ±‚å‡å€¼
 			Vec3f gammaColor = Util::Gamma(color);
 
 			Vec3i iGammaColor = 255.99f * gammaColor;
@@ -73,7 +73,7 @@ const Vec3f Sky(const Ray & ray) {
 	const Vec3f white(1.f);
 	const Vec3f blue(0.5, 0.7, 1);
 
-	return Vec3f::Lerp(white, blue, t); // ÏßĞÔ²åÖµ
+	return Vec3f::Lerp(white, blue, t); // çº¿æ€§æ’å€¼
 }
 
 const Vec3f Trace(Ptr<Hitable> scene, Ray & ray, int depth) {

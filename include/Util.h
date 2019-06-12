@@ -5,7 +5,7 @@
 
 #include <random>
 
-// ÓÃÓÚ»ñÈ¡ CPU ºËĞÄÊı
+// ç”¨äºè·å– CPU æ ¸å¿ƒæ•°
 #ifdef WIN32
 #include <windows.h>
 #elif defined linux
@@ -15,11 +15,11 @@
 #endif
 
 
-// ÓÃÒ»¸öÃüÃû¿Õ¼äÀ´±ãÀû²éÕÒ½Ó¿Ú
+// ç”¨ä¸€ä¸ªå‘½åç©ºé—´æ¥ä¾¿åˆ©æŸ¥æ‰¾æ¥å£
 namespace Util {
 	constexpr float PI = 3.1415926f;
-	constexpr float LARGE_FLT = 98e8f; // ´ó¸¡µãÊı
-	constexpr float DELTA_FLT = 98e-8f; // Ğ¡¸¡µãÊı
+	constexpr float LARGE_FLT = 98e8f; // å¤§æµ®ç‚¹æ•°
+	constexpr float DELTA_FLT = 98e-8f; // å°æµ®ç‚¹æ•°
 	constexpr float DEFAULT_TMIN = 0.001f;
 
 	// [0, 1)
@@ -49,7 +49,7 @@ namespace Util {
 	}
 
 	// [0, 1)
-	// z Îª 0£¬ÊÇÈßÓàµÄ
+	// z ä¸º 0ï¼Œæ˜¯å†—ä½™çš„
 	const Vec3f RandInDisk() {
 		Vec3f p;
 		do {
@@ -66,24 +66,24 @@ namespace Util {
 		return { x,y,z };
 	}
 
-	// I ³¯Ïò±íÃæ£¬N ³¯Ïò±íÃæÍâ²à
-	// I ºÍ N ÎŞĞèÊÇµ¥Î»ÏòÁ¿
-	// ·´Éä·½ÏòµÄ³¤¶ÈµÈÓÚ I
+	// I æœå‘è¡¨é¢ï¼ŒN æœå‘è¡¨é¢å¤–ä¾§
+	// I å’Œ N æ— éœ€æ˜¯å•ä½å‘é‡
+	// åå°„æ–¹å‘çš„é•¿åº¦ç­‰äº I
 	const Vec3f Reflect(const Vec3f & I, const Vec3f & N) {
 		return I - 2.f * I.Dot(N) * N;
 	}
 
-	// I ºÍ N ÊÇµ¥Î»ÏòÁ¿
-	// I ³¯Ïò±íÃæ£¬N ³¯Ïò±íÃæÍâ²à
-	// ·¢ÉúÈ«·´ÉäÊ±£¬·µ»Ø false£¬·ñÔò·µ»Ø true
+	// I å’Œ N æ˜¯å•ä½å‘é‡
+	// I æœå‘è¡¨é¢ï¼ŒN æœå‘è¡¨é¢å¤–ä¾§
+	// å‘ç”Ÿå…¨åå°„æ—¶ï¼Œè¿”å› falseï¼Œå¦åˆ™è¿”å› true
 	const bool Refract(const Vec3f & I, Vec3f N, float ior, Vec3f & T) {
-		float etai_etat; // ÈëÉä²àÕÛÉäÂÊ ³ıÒÔ ÕÛÉä²àÕÛÉäÂÊ
+		float etai_etat; // å…¥å°„ä¾§æŠ˜å°„ç‡ é™¤ä»¥ æŠ˜å°„ä¾§æŠ˜å°„ç‡
 		float IoN = I.Dot(N);
 		bool isEntering = IoN < 0;
 		if (!isEntering) {
-			// Éä³ö
+			// å°„å‡º
 
-			// ÈÃ N ÔÚ I ÕâÒ»²à
+			// è®© N åœ¨ I è¿™ä¸€ä¾§
 			N = -N;
 			IoN = -IoN;
 
@@ -93,22 +93,22 @@ namespace Util {
 			etai_etat = 1.f / ior; // etai = 1, etat = ior
 
 		float discriminant = 1.f - etai_etat * etai_etat * (1.f - IoN * IoN);
-		if (discriminant <= 0) // È«·´Éä
+		if (discriminant <= 0) // å…¨åå°„
 			return false;
 		
 		T = etai_etat * (I - IoN * N) - sqrt(discriminant) * N;
 		return true;
 	}
 
-	// ·ÆÄù¶ûÏµÊı£¬Schlick ½üËÆ¹«Ê½
+	// è²æ¶…å°”ç³»æ•°ï¼ŒSchlick è¿‘ä¼¼å…¬å¼
 	float Fresnel_Schlick(float ior, float cosTheta) {
 		float F0 = pow((ior - 1.f) / (ior + 1.f), 2);
 		return F0 + (1.f - F0) * pow(1.f - cosTheta, 5);
 	}
 
-	// »ñÈ¡ CPU µÄÂß¼­ºËĞÄÊı
+	// è·å– CPU çš„é€»è¾‘æ ¸å¿ƒæ•°
 	int NumCPU() {
-		// ¸ù¾İ²»Í¬µÄÏµÍ³Ñ¡Ôñ¶ÔÓ¦µÄÊµÏÖ
+		// æ ¹æ®ä¸åŒçš„ç³»ç»Ÿé€‰æ‹©å¯¹åº”çš„å®ç°
 #ifdef WIN32
 		SYSTEM_INFO info;
 		GetSystemInfo(&info);
@@ -121,7 +121,7 @@ namespace Util {
 #endif
 	}
 
-	// ¾ùÖµ
+	// å‡å€¼
 	template<typename T>
 	T Mean(const std::vector<T> & vals) {
 		auto rst = static_cast<T>(0);
@@ -130,7 +130,7 @@ namespace Util {
 		return rst / static_cast<T>(vals.size());
 	}
 
-	// ·½²î
+	// æ–¹å·®
 	template<typename T>
 	T Var(const std::vector<T> & vals) {
 		auto rst = static_cast<T>(0);

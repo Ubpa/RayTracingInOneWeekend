@@ -5,7 +5,7 @@
 
 #include <Util.h>
 
-// µç½éÖÊ£¬ÈçË®¡¢²£Á§
+// ç”µä»‹è´¨ï¼Œå¦‚æ°´ã€ç»ç’ƒ
 class Dielectric :public Material {
 public:
 	Dielectric(float ior) :ior(ior) {}
@@ -25,26 +25,26 @@ public:
 const ScatterRst Dielectric::Scatter(const Ray & ray, const HitRecord & rec) const {
 	Vec3f I = ray.d.Normalize();
 
-	Vec3f T; // ÕÛÉä·½Ïò
+	Vec3f T; // æŠ˜å°„æ–¹å‘
 	if (!Util::Refract(I, rec.n, ior, T)) {
-		// È«·´Éä
+		// å…¨åå°„
 		Vec3f dir = Util::Reflect(I, rec.n);
 		return ScatterRst(true, { rec.p, dir }, Vec3f(1.f));
 	}
 
 	float IoN = I.Dot(rec.n);
 	bool isEntering = IoN < 0;
-	// ±ØĞëÊÇ¿ÕÆøÖĞµÄ·½ÏòÓë·¨ÏòµÄ¼Ğ½ÇµÄÓàÏÒ
+	// å¿…é¡»æ˜¯ç©ºæ°”ä¸­çš„æ–¹å‘ä¸æ³•å‘çš„å¤¹è§’çš„ä½™å¼¦
 	float cosTheta = isEntering ? -I.Dot(rec.n) : T.Dot(rec.n);
-	float F = Util::Fresnel_Schlick(ior, cosTheta); // ·ÆÄù¶ûÏµÊı£¬¼´·´Éä¸ÅÂÊ
+	float F = Util::Fresnel_Schlick(ior, cosTheta); // è²æ¶…å°”ç³»æ•°ï¼Œå³åå°„æ¦‚ç‡
 
 	if (Util::RandF() < F) {
-		// ·´Éä
+		// åå°„
 		Vec3f dir = Util::Reflect(I, rec.n);
 		return ScatterRst(true, { rec.p, dir }, Vec3f(1.f));
 	}
 
-	// ÕÛÉä
+	// æŠ˜å°„
 	return ScatterRst(true, { rec.p, T }, Vec3f(1.f));
 }
 

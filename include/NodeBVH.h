@@ -42,22 +42,22 @@ bool NodeBVH::Hit(Ray & ray, HitRecord & rec) const {
 	auto leftRst = left->GetBox().Hit(ray);
 	auto rightRst = right->GetBox().Hit(ray);
 
-	if (leftRst.hit) { // »÷ÖĞ×ó²àºĞ×Ó
-		if (rightRst.hit) { // »÷ÖĞÓÒ²àºĞ×Ó
-			if (leftRst.t0 < rightRst.t0) { // ×ó½Úµã¿¿Ç°
+	if (leftRst.hit) { // å‡»ä¸­å·¦ä¾§ç›’å­
+		if (rightRst.hit) { // å‡»ä¸­å³ä¾§ç›’å­
+			if (leftRst.t0 < rightRst.t0) { // å·¦èŠ‚ç‚¹é å‰
 				bool hit = left->Hit(ray, rec);
-				if (!hit) // ×ó½ÚµãÎ´»÷ÖĞ£¬ÔòÏà½»Ö»È¡¾öÓÚÓÒ½Úµã
+				if (!hit) // å·¦èŠ‚ç‚¹æœªå‡»ä¸­ï¼Œåˆ™ç›¸äº¤åªå–å†³äºå³èŠ‚ç‚¹
 					return right->Hit(ray, rec);
 
-				// ÒÑ»÷ÖĞ×ó½áµã£¬Èç¹ûÉäÏßÖÕµãÄÜ¹»µ½ÓÒ²àºĞ×Ó£¬Ôò¼ÌĞø¶ÔÓÒ½Úµã½øĞĞÅĞ¶¨
+				// å·²å‡»ä¸­å·¦ç»“ç‚¹ï¼Œå¦‚æœå°„çº¿ç»ˆç‚¹èƒ½å¤Ÿåˆ°å³ä¾§ç›’å­ï¼Œåˆ™ç»§ç»­å¯¹å³èŠ‚ç‚¹è¿›è¡Œåˆ¤å®š
 				if (ray.tMax > rightRst.t0)
 					right->Hit(ray, rec);
 
-				// Ç°±ßÒÑÈ·¶¨ÁËÓĞ½Úµã±»»÷ÖĞÁË
+				// å‰è¾¹å·²ç¡®å®šäº†æœ‰èŠ‚ç‚¹è¢«å‡»ä¸­äº†
 				return true;
 			}
 			else {
-				// ÓëÉÏ±ßµÄÇé¿ö×óÓÒÏà·´
+				// ä¸ä¸Šè¾¹çš„æƒ…å†µå·¦å³ç›¸å
 				bool hit = right->Hit(ray, rec);
 				if (!hit)
 					return left->Hit(ray, rec);
@@ -68,20 +68,20 @@ bool NodeBVH::Hit(Ray & ray, HitRecord & rec) const {
 				return true;
 			}
 		}
-		else // Î´»÷ÖĞÓÒ²àºĞ×Ó£¬ÔòÏà½»Ö»È¡¾öÓÚ×ó½Úµã
+		else // æœªå‡»ä¸­å³ä¾§ç›’å­ï¼Œåˆ™ç›¸äº¤åªå–å†³äºå·¦èŠ‚ç‚¹
 			return left->Hit(ray, rec);
 	}
-	else if (rightRst.hit) // Î´»÷ÖĞÓÒ²àºĞ×Ó£¬ÔòÏà½»Ö»È¡¾öÓÚÓÒ½Úµã
+	else if (rightRst.hit) // æœªå‡»ä¸­å³ä¾§ç›’å­ï¼Œåˆ™ç›¸äº¤åªå–å†³äºå³èŠ‚ç‚¹
 		return right->Hit(ray, rec);
 	else
 		return false;
 }
 
 const Ptr<NodeBVH> NodeBVH::Build(const std::vector<Ptr<Hitable>> & hitables) {
-	if (hitables.size() == 1) // µİ¹éÖÕÖ¹Ìõ¼ş
+	if (hitables.size() == 1) // é€’å½’ç»ˆæ­¢æ¡ä»¶
 		return NodeBVH::New(hitables.front());
 
-	// »ñÈ¡°üÎ§ºĞÖĞĞÄ£¬°´Öá¼ÇÂ¼
+	// è·å–åŒ…å›´ç›’ä¸­å¿ƒï¼ŒæŒ‰è½´è®°å½•
 	std::vector<float> centers[3];
 	for (auto hitable : hitables){
 		auto center = hitable->GetBox().Center();
@@ -89,16 +89,16 @@ const Ptr<NodeBVH> NodeBVH::Build(const std::vector<Ptr<Hitable>> & hitables) {
 			centers[axis].push_back(center[axis]);
 	}
 	
-	// ¼ÆËãÖĞĞÄµÄ·½²î
+	// è®¡ç®—ä¸­å¿ƒçš„æ–¹å·®
 	float vars[3];
 	for (int axis = 0; axis < 3; axis++)
 		vars[axis] = Util::Var(centers[axis]);
 
-	// ·½²î×î´óµÄÖá¼´Îª»®·ÖÖá£¬»®·ÖÖµÎª¾ùÖµ
+	// æ–¹å·®æœ€å¤§çš„è½´å³ä¸ºåˆ’åˆ†è½´ï¼Œåˆ’åˆ†å€¼ä¸ºå‡å€¼
 	int spiltAxis = (vars[0] > vars[1] && vars[0] > vars[2]) ? 0 : (vars[1] > vars[2] ? 1 : 2);
 	float spiltVal = Util::Mean(centers[spiltAxis]);
 
-	// ¸ù¾İ»®·ÖÖáºÍ»®·ÖÖµ½øĞĞ»®·Ö
+	// æ ¹æ®åˆ’åˆ†è½´å’Œåˆ’åˆ†å€¼è¿›è¡Œåˆ’åˆ†
 	std::vector<Ptr<Hitable>> leftHitables;
 	std::vector<Ptr<Hitable>> rightHitables;
 	for (auto hitable : hitables) {
@@ -109,7 +109,7 @@ const Ptr<NodeBVH> NodeBVH::Build(const std::vector<Ptr<Hitable>> & hitables) {
 			rightHitables.push_back(hitable);
 	}
 	
-	// ÓĞÊ±»á»®·ÖÊ§°Ü£¨ÖĞĞÄÖØºÏ£©£¬´ËÊ±¾ÍÇ¿ĞĞ¾ù·Ö
+	// æœ‰æ—¶ä¼šåˆ’åˆ†å¤±è´¥ï¼ˆä¸­å¿ƒé‡åˆï¼‰ï¼Œæ­¤æ—¶å°±å¼ºè¡Œå‡åˆ†
 	if (leftHitables.size() == 0 || rightHitables.size() == 0) {
 		leftHitables.clear();
 		rightHitables.clear();
@@ -121,7 +121,7 @@ const Ptr<NodeBVH> NodeBVH::Build(const std::vector<Ptr<Hitable>> & hitables) {
 			rightHitables.push_back(hitables[i]);
 	}
 	
-	// µİ¹é
+	// é€’å½’
 	auto leftNode = NodeBVH::Build(leftHitables);
 	auto rightNode = NodeBVH::Build(rightHitables);
 	return NodeBVH::New(leftNode, rightNode);
