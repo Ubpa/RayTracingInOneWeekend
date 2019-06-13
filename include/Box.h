@@ -45,8 +45,8 @@ const Box::HitRst Box::Hit(const Ray & ray) const {
 			std::swap(t0, t1);
 
 		// 范围求交
-		tMin = max(t0, tMin);
-		tMax = min(t1, tMax);
+		tMin = (std::max)(t0, tMin);
+		tMax = (std::min)(t1, tMax);
 		if (tMax < tMin) {
 			rst.hit = false;
 			return rst;

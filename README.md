@@ -14,16 +14,19 @@
 
 ## 环境
 
-对于 Windows 用户，要求
+### Windows
 
 - VS 2017
 - [CMake](https://cmake.org/) 3.1 以上
 
-对于 Linux，理论上支持，未测试
+### Linux
+
+- C++11
+- [CMake](https://cmake.org/) 3.1 以上
 
 ## 安装
 
-对于 Windows
+### Windows
 
 搭建工程
 
@@ -39,4 +42,16 @@ start RayTracingInOneWeekend.sln
 打开 VS 后
 
 在解决方案中，右键 `CMakePredefinedTargets/INSTALL`，点击“生成”，各种 exe 就会安装在 `bin/` 中了。
+
+### Linux
+
+```shell
+mkdir build
+cd build
+cmake ..
+make
+make install
+```
+
+这样所有的程序都在 `bin/` 中，执行这些程序，输出结果在 `data/` 中
 

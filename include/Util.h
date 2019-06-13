@@ -8,7 +8,7 @@
 // 用于获取 CPU 核心数
 #ifdef WIN32
 #include <windows.h>
-#elif defined linux
+#elif defined(__linux__)
 #include <unistd.h>
 #else
 #error not support system
@@ -113,7 +113,7 @@ namespace Util {
 		SYSTEM_INFO info;
 		GetSystemInfo(&info);
 		return static_cast<int>(info.dwNumberOfProcessors);
-#elif defined linux
+#elif defined(__linux__)
 		int cpu_num = sysconf(_SC_NPROCESSORS_ONLN);
 		return cpu_num;
 #else

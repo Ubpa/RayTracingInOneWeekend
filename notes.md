@@ -620,20 +620,23 @@ CPU 有多个核心，为了都利用上，可以使用多线程。渲染可以�
 首先要获取 CPU 的核心数，为了同时支持 Windows 和 Linux，使用了预处理指令 `#ifdef` 等。
 
 ```c++
+// 用于获取 CPU 核心数
 #ifdef WIN32
 #include <windows.h>
-#elif defined linux
+#elif defined(__linux__)
 #include <unistd.h>
 #else
 #error not support system
 #endif
 
+// 获取 CPU 的逻辑核心数
 int NumCPU() {
+    // 根据不同的系统选择对应的实现
 #ifdef WIN32
     SYSTEM_INFO info;
     GetSystemInfo(&info);
     return static_cast<int>(info.dwNumberOfProcessors);
-#elif defined linux
+#elif defined(__linux__)
     int cpu_num = sysconf(_SC_NPROCESSORS_ONLN);
     return cpu_num;
 #else

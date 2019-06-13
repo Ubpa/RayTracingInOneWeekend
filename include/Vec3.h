@@ -3,6 +3,7 @@
 
 #include <cassert>
 #include <cmath>
+#include <algorithm>
 #include <type_traits>
 
 template<typename T>
@@ -23,7 +24,7 @@ public:
 	// 该模板函数如果不正确使用，IDE 不报错，编译期才会报出大量的编译错误提示
 	// 而且该函数非常容易就错误使用了
 	// 因此我们使用 std::enable_if 使其在错误使用时隐藏起来
-	template<typename U, typename = std::enable_if_t<std::is_convertible_v<U, T>>>
+	template<typename U, typename = typename std::enable_if<std::is_convertible<U, T>::value>::type>
 	Vec3(U v) : Vec3(static_cast<T>(v), static_cast<T>(v), static_cast<T>(v)) { }
 
 	Vec3() : Vec3(0) {}
@@ -33,14 +34,18 @@ public:
 
 public:
 	// 异常检测
-	bool HasNaN() const { return std::isnan<double>(x) || std::isnan<double>(y) || std::isnan<double>(z); }
+	bool HasNaN() const {
+		return std::isnan(static_cast<float>(x))
+			|| std::isnan(static_cast<float>(y))
+			|| std::isnan(static_cast<float>(z));
+	}
 
 	// 最值
 	static const Vec3 Min(const Vec3 & lhs, const Vec3 & rhs){
-		return { std::min(lhs.x,rhs.x), std::min(lhs.y,rhs.y), std::min(lhs.z,rhs.z) };
+		return { (std::min)(lhs.x,rhs.x), (std::min)(lhs.y,rhs.y), (std::min)(lhs.z,rhs.z) };
 	}
 	static const Vec3 Max(const Vec3 & lhs, const Vec3 & rhs) {
-		return { std::max(lhs.x,rhs.x), std::max(lhs.y,rhs.y), std::max(lhs.z,rhs.z) };
+		return { (std::max)(lhs.x,rhs.x), (std::max)(lhs.y,rhs.y), (std::max)(lhs.z,rhs.z) };
 	}
 
 	// 元素获取
