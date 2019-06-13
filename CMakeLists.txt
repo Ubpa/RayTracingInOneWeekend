@@ -102,10 +102,9 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 cmake_minimum_required(VERSION 3.1.0 FATAL_ERROR)
 cmake_policy(VERSION 3.1.0)
 
-add_definitions(-std=c++11)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
-
 project (${PROJECT_NAME})
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread")
 
 # The version number.
 set (${PROJECT_NAME}_VERSION_MAJOR 1)
